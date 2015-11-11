@@ -20,11 +20,11 @@ db.define_table('boxes',
 ## Comics
 db.define_table('comics',
     Field('box_id', type='reference boxes'),
-    Field('image', type='upload'),
     Field('title', type='string'),
     Field('issue_no', type='integer'),
     Field('writers', type='list:string'),
     Field('artists', type='list:string'),
     Field('publisher', type='string'),
-    Field('description', type='string')
+    Field('description', type='string'),
+    Field('image', type='upload')
 )
