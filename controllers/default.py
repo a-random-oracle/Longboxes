@@ -1,30 +1,42 @@
 # -*- coding: utf-8 -*-
 
+import operator
 
-def index():    
-    comic_counts = {}
+
+def index():
+    # Get the five largest boxes
+    comic_counts = []
     
     for box in db().select(db.boxes.ALL):
-        comic_counts[box] = db(db.comics.box_id == box.id).count()
+        comic_counts.append((box, box.id, db(db.comics.box_id == box.id).count()))
     
-    largest_boxes = sorted(comic_counts, key=comic_counts.get, reverse=True)
-    newest_boxes = db().select(db.boxes.ALL, orderby=db.boxes.creation_date)
+    # Double sort is necessary here as otherwise when two boxes have the same number
+    # of comics their order is not well defined (and can switch on page reloads)
+    largest_boxes = sorted(comic_counts, key=operator.itemgetter(2), reverse=True)
+    largest_boxes = sorted(largest_boxes, key=operator.itemgetter(1))
     
-    if len(largest_boxes) >= 5:
-        largest_boxes = largest_boxes[:5]
+    largest_boxes = [box[0] for box in largest_boxes]
     
-    if len(newest_boxes) >= 5:
-        newest_boxes = newest_boxes[:5]
+    if len(largest_boxes) >= NUM_LARGEST_BOXES_TO_DISPLAY:
+        largest_boxes = largest_boxes[:NUM_LARGEST_BOXES_TO_DISPLAY]
     
     largest_boxes_html = []
     for box in largest_boxes:
         largest_boxes_html.append(construct_box_preview(box))
     
+    
+    # Get the five newest boxes
+    newest_boxes = db().select(db.boxes.ALL, orderby=db.boxes.creation_date|db.boxes.id)
+    
+    if len(newest_boxes) >= NUM_NEWEST_BOXES_TO_DISPLAY:
+        newest_boxes = newest_boxes[:NUM_NEWEST_BOXES_TO_DISPLAY]
+    
     newest_boxes_html = []
     for box in newest_boxes:
         newest_boxes_html.append(construct_box_preview(box))
     
-    response.use_app_title = True
+    
+    response.title = ""
     return dict(largest_boxes_html=largest_boxes_html, newest_boxes_html=newest_boxes_html)
 
 
