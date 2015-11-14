@@ -1,0 +1,19 @@
+img.comic-thumbnail {
+	float: left;
+	margin: 1px 1px 1px 1px;
+}
+
+div.comic-title {
+	font-size: large;
+	margin-left: 5px;
+}
+
+div.comic-issue-no {
+	font-size: medium;
+	margin-left: 5px;
+}
+
+div.comic-owner {
+	font-size: medium;
+	margin-left: 5px;
+}

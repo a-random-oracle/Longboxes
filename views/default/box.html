@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+
+<head>
+{{include 'head.html'}}
+</head>
+
+<body>
+{{include 'header.html'}}
+
+	<div class="container-fluid">
+		<h3 class="text-center"><strong>{{=box.name}}</strong></h3>
+		<p class="text-center">Created on {{=box.creation_date}}</p>
+		<p class="text-center">{{=owner.display_name}}</p>
+		
+		{{#for comic in comics:}}
+	</div>
+
+{{include 'footer.html'}}
+</body>
+
+</html>
