@@ -1,7 +1,21 @@
-	<header>
-		<div class="navbar navbar-inverse navbar-fixed-top">
-			<div class="container-fluid">
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container-fluid">
+			<div class="navbar-header">
 				<a class="navbar-brand" href="{{=URL('index')}}">Longboxes</a>
 			</div>
+
+				<ul class="nav navbar-nav navbar-right">
+				{{
+				if auth.is_logged_in():
+					login_url = URL('user', args=['logout'], vars=dict(_next=URL('index')))
+					login_text = T('Sign Out')
+					pass
+				else:
+					login_url = URL('user', args=['login'], vars=dict(_next=URL('user', args=['profile'])))
+					login_text = T('Sign In')
+					pass
+				}}
+				<li><a href="{{=login_url}}">{{=login_text}}</a></li>
+			</ul>
 		</div>
-	</header>
+	</nav>
