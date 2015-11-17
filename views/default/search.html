@@ -1,0 +1,13 @@
+{{extend 'longboxes.html'}}
+
+	<div class="site-search">
+		{{=search}}
+	</div>
+	
+	<div class="container-fluid">
+		{{if len(results_html) > 0:}}
+		{{for comic_html in results_html:}}
+		{{=DIV(comic_html, _class='col-sm-6 col-md-4')}}
+		{{pass}}
+		{{pass}}
+	</div>
