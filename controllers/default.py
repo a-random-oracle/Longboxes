@@ -3,17 +3,74 @@
 import operator
 
 
+# Helper methods
+def construct_box_preview(box):
+    user_id = db(db.auth_user.id == db.boxes.user_id and
+                 db.boxes.id == box.id).select()[0].user_id
+    owner = db(db.auth_user.id == user_id).select()[0]
+    comics = db(db.comics.box_id == box.id).select(db.comics.ALL, orderby=~db.comics.id)
+    
+    if (len(comics) == 0):
+        box_image = IMG(_src=URL('static', 'images/default_comic.png'),
+                        _class='box-thumbnail')
+    else:
+        box_image = IMG(_src=URL('download', args=comics[0].image),
+                        _class='box-thumbnail')
+    
+    return DIV(A(box_image,
+                 _href=URL('box', vars=dict(id=box.id))),
+               A(DIV(box.name,
+                     _class='box-name'),
+                 _href=URL('box', vars=dict(id=box.id))),
+               DIV(display_name(owner),
+                   _class='box-owner'),
+               DIV(str(len(comics)) + ' comics',
+                   _class='box-comic-count'),
+               DIV(_class='clear-floats'),
+               _class='box-preview')
+
+
+def construct_comic_preview(comic):
+    box_id = db(db.boxes.id == db.comics.box_id and
+                db.comics.id == comic.id).select()[0].box_id
+    user_id = db(db.auth_user.id == db.boxes.user_id and
+                 db.boxes.id == box_id).select()[0].user_id
+    owner = db(db.auth_user.id == user_id).select()[0]
+    
+    return DIV(A(IMG(_src=URL('download', args=comic.image),
+                     _class='comic-thumbnail'),
+                 _href=URL('comic', vars=dict(id=comic.id))),
+               A(DIV(comic.title, _class='comic-title'),
+                 _href=URL('comic', vars=dict(id=comic.id))),
+               DIV('Issue No. ' + str(comic.issue_no),
+                   _class='comic-issue-no'),
+               DIV(display_name(owner),
+                   _class='comic-owner'),
+               DIV(_class='clear-floats'),
+               _class='comic-preview')
+
+
+def display_name(user):
+    return str(user.first_name + ' ' + user.last_name)
+
+
+
+
+
+
+
+
+
+# Site routes
+
 def index():
     # Get the five largest boxes
     comic_counts = []
     
     for box in db().select(db.boxes.ALL):
-        comic_counts.append((box, box.id, db(db.comics.box_id == box.id).count()))
+        comic_counts.append((box, db(db.comics.box_id == box.id).count()))
     
-    # Double sort is necessary here as otherwise when two boxes have the same number
-    # of comics their order is not well defined (and can switch on page reloads)
-    largest_boxes = sorted(comic_counts, key=operator.itemgetter(2), reverse=True)
-    largest_boxes = sorted(largest_boxes, key=operator.itemgetter(1))
+    largest_boxes = sorted(comic_counts, key=operator.itemgetter(1), reverse=True)
     
     largest_boxes = [box[0] for box in largest_boxes]
     
@@ -36,20 +93,46 @@ def index():
         newest_boxes_html.append(construct_box_preview(box))
     
     
-    response.title = ""
+    response.title = DEFAULT_TITLE
     return dict(largest_boxes_html=largest_boxes_html, newest_boxes_html=newest_boxes_html)
+
+
+def search():
+    search = FORM(INPUT(_name='search_term', _placeholder="Search by Name, Artist, Writer or Publisher"),
+                  INPUT(_name='Search', _type='submit', _value='Search'))
+    
+    results = []
+    
+    if search.vars != None and search.vars.search_term != None:
+        query_term = '%' + search.vars.search_term + '%'
+        match_title = db(db.comics.title.like(query_term)).select()
+        match_writer = db(db.comics.writers.like(query_term)).select()
+        match_artist = db(db.comics.artists.like(query_term)).select()
+        match_publisher = db(db.comics.publisher.like(query_term)).select()
+        results = match_title | match_writer | match_artist | match_publisher
+    
+    results_html = []
+    if len(results) > 0:
+        for comic in results:
+            results_html.append(construct_comic_preview(comic))
+    
+    return dict(search=search, results_html=results_html)
 
 
 def box():
     box_id = request.vars['id'] if request.vars['id'] != None else 1
     box = db(db.boxes.id == box_id).select()[0]
-    user_id = db(db.users.id == db.boxes.user_id and
+    user_id = db(db.auth_user.id == db.boxes.user_id and
                  db.boxes.id == box_id).select()[0].user_id
-    owner = db(db.users.id == user_id).select()[0]
-    comics = db(db.comics.box_id == box.id)
+    owner = db(db.auth_user.id == user_id).select()[0]
+    comics = db(db.comics.box_id == box.id).select()
+    
+    comics_html = []
+    for comic in comics:
+        comics_html.append(construct_comic_preview(comic))
     
     response.title = box.name
-    return dict(box=box, owner=owner, comics=comics)
+    return dict(box=box, owner=owner, comics_html=comics_html)
 
 
 def comic():
@@ -60,32 +143,23 @@ def comic():
     return dict(comic=comic)
 
 
-def comic_preview():
-    comic_id = request.vars['id'] if request.vars['id'] != None else 1
-    comic = db(db.comics.id == comic_id).select()[0]
-    comic_html = construct_comic_preview(comic)
-
-    response.title = comic.title
-    return dict(comic_html=comic_html)
-
-
 def user():
-    """
-    exposes:
-    http://..../[app]/default/user/login
-    http://..../[app]/default/user/logout
-    http://..../[app]/default/user/register
-    http://..../[app]/default/user/profile
-    http://..../[app]/default/user/retrieve_password
-    http://..../[app]/default/user/change_password
-    http://..../[app]/default/user/manage_users (requires membership in
-    http://..../[app]/default/user/bulk_register
-    use @auth.requires_login()
-        @auth.requires_membership('group name')
-        @auth.requires_permission('read','table name',record_id)
-    to decorate functions that need access control
-    """
-    return dict(form=auth())
+    # Use custom handler for user/profile
+    if request.args(0) == 'profile':
+        response.view = 'default/profile.html'
+        
+        users_boxes = db(db.boxes.user_id == auth.user.id).select(db.boxes.ALL, orderby=db.boxes.creation_date)
+        
+        users_boxes_html = []
+        for box in users_boxes:
+            users_boxes_html.append(construct_box_preview(box))
+        
+        return dict(users_boxes_html=users_boxes_html)
+    
+    
+    login_form = auth()
+    
+    return dict(login_form=login_form)
 
 
 @cache.action()
