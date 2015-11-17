@@ -1,6 +1,28 @@
+img.comic-cover-image {
+	float: left;
+	margin: 1px 1px 1px 1px;
+	display: block;
+	max-width: 300px;
+	max-height: 400px;
+	width: 100%;
+	height: auto;
+}
+
+div.comic-preview {
+	margin-top: 2%;
+	margin-bottom: 2%;
+	border-style: solid;
+	border-width: thin;
+}
+
 img.comic-thumbnail {
 	float: left;
 	margin: 1px 1px 1px 1px;
+	display: block;
+	max-width: 150px;
+	max-height: 200px;
+	width: 100%;
+	height: auto;
 }
 
 div.comic-title {
@@ -16,4 +38,24 @@ div.comic-issue-no {
 div.comic-owner {
 	font-size: medium;
 	margin-left: 5px;
+}
+
+div.box-preview {
+	margin-top: 2%;
+	margin-bottom: 2%;
+	/*border-style: solid;
+	border-width: thin;*/
+}
+
+img.box-thumbnail {
+	margin: 1px 1px 1px 1px;
+	display: block;
+	max-width: 150px;
+	max-height: 200px;
+	width: 100%;
+	height: auto;
+}
+
+div.clear-floats {
+	clear: both;
 }
