@@ -1,29 +1,27 @@
-<!DOCTYPE html>
+{{extend 'longboxes.html'}}
 
-<head>
-{{include 'head.html'}}
-</head>
-
-<body>
-{{include 'header.html'}}
-
-	<div class="container-fluid">
+	<div class="box-collection">
 		<h2>Expanding Collections</h2>
-		{{for i in range(0, len(largest_boxes_html)):}}
-		{{=largest_boxes_html[i]}}
+		{{if len(largest_boxes_html) > 0:}}
+		{{=DIV(_class='col-md-1')}}
+		{{for box_html in largest_boxes_html:}}
+		{{=DIV(box_html, _class='col-sm-4 col-md-2')}}
 		{{pass}}
-		<div style="clear:both"></div>
+		{{=DIV(_class='col-md-1')}}
+		{{pass}}
+
+		{{=DIV(_class='clear-floats')}}
 	</div>
 
-	<div class="container-fluid">
+	<div class="box-collection">
 		<h2>New Collections</h2>
-		{{for i in range(0, len(newest_boxes_html)):}}
-		{{=newest_boxes_html[i]}}
+		{{if len(newest_boxes_html) > 0:}}
+		{{=DIV(_class='col-md-1')}}
+		{{for box_html in newest_boxes_html:}}
+		{{=DIV(box_html, _class='col-sm-4 col-md-2')}}
 		{{pass}}
-		<div style="clear:both"></div>
+		{{=DIV(_class='col-md-1')}}
+		{{pass}}
+
+		{{=DIV(_class='clear-floats')}}
 	</div>
-
-{{include 'footer.html'}}
-</body>
-
-</html>
