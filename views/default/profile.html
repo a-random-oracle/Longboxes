@@ -1,0 +1,12 @@
+{{extend 'longboxes.html'}}
+
+	<div class="box-collection">
+		<h2>Boxes</h2>
+		{{if len(users_boxes_html) > 0:}}
+		{{for box_html in users_boxes_html:}}
+		{{=DIV(box_html, _class='col-sm-4 col-md-2')}}
+		{{pass}}
+		{{pass}}
+
+		{{=DIV(_class='clear-floats')}}
+	</div>
