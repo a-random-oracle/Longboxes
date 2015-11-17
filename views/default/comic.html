@@ -1,16 +1,9 @@
-<!DOCTYPE html>
-
-<head>
-{{include 'head.html'}}
-</head>
-
-<body>
-{{include 'header.html'}}
+{{extend 'longboxes.html'}}
 
 	<div class="container-fluid">
 		<h3 class="text-center"><strong>{{=comic.title}}</strong></h3>
 		<p class="text-center">Issue No. {{=comic.issue_no}}</p>
-		<img class="center-block" src="{{=URL('download', args=comic.image)}}" />
+		<img class="comic-cover-image" src="{{=URL('download', args=comic.image)}}" />
 		{{if len(comic.writers) > 0:}}
 		<p>Writers: {{=','.join(comic.writers)}}</p>
 		{{pass}}
@@ -19,9 +12,5 @@
 		{{pass}}
 		<p>Publisher: {{=comic.publisher}}</p>
 		<p>{{=comic.description}}</p>
+		<div style="clear: both"></div>
 	</div>
-
-{{include 'footer.html'}}
-</body>
-
-</html>
