@@ -11,7 +11,7 @@ def construct_box_preview(box):
     comics = db(db.comics.box_id == box.id).select(db.comics.ALL, orderby=~db.comics.id)
     
     if (len(comics) == 0):
-        box_image = IMG(_src=URL('static', 'images/default_comic.png'),
+        box_image = IMG(_src=URL('static', 'images/default_box.png'),
                         _class='box-thumbnail')
     else:
         box_image = IMG(_src=URL('download', args=comics[0].image),
@@ -160,6 +160,27 @@ def user():
     login_form = auth()
     
     return dict(login_form=login_form)
+
+
+def new_box():
+    form = FORM(DIV(INPUT(_name='box_name', _placeholder="Type a name for the box", _class='form-control'),
+                    _class='form-group'),
+                DIV(LABEL(INPUT(_name='visibility', _type='checkbox'),
+                          'Make box public'),
+                    _class='checkbox'),
+                INPUT(_name='Add Box', _type='submit', _value='Add Box', _class='btn btn-default'),
+                _role='form')
+    
+    if form.accepts(request, session):
+        if form.vars.box_name != None:
+            new_box_name = form.vars.box_name
+            is_public = form.vars.visibility == 'on'
+    elif form.errors:
+        pass
+    else:
+        pass
+    
+    return dict(form=form)
 
 
 @cache.action()
