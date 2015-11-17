@@ -22,6 +22,10 @@ db = DAL(myconf.take('db.uri'), pool_size=myconf.take('db.pool_size', cast=int),
 ## store sessions in cookies
 session.connect(request, response, cookie_key='as1fGyjbNdr5Udsh', compression_level=None)
 
+## enable crud forms
+from gluon.tools import Crud
+crud = Crud(db)
+crud.settings.formstyle = 'divs'
 
 ## by default give a view/generic.extension to all actions from localhost
 ## none otherwise. a pattern can be 'controller/function.extension'
