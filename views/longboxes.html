@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+
+{{include 'head.html'}}
+
+<body>
+{{block header}}{{include 'header.html'}}{{end header}}
+{{include}}
+{{block footer}}{{end footer}}
+	<script src="{{=URL('static', 'js/jquery.js')}}" type="text/javascript"></script>
+	<script src="{{=URL('static', 'js/web2py.js')}}" type="text/javascript"></script>
+	{{block page_js}}{{end page_js}}
+</body>
+ 
+</html>
