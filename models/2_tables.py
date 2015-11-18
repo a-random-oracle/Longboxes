@@ -2,6 +2,11 @@
 
 # Define database tables
 
+## auth_user
+get_display_name = lambda user: user.first_name + ' ' + user.last_name
+get_display_name_func = lambda row: get_display_name(row.auth_user)
+db.auth_user.display_name = Field.Virtual('display_name', get_display_name_func)
+
 ## Boxes
 db.define_table('boxes',
     Field('user_id', type='reference auth_user'),

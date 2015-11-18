@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 
 # Helper methods
-def display_name(user):
-    return str(user.first_name + ' ' + user.last_name)
-
-
 def construct_box_preview(box):
     user_id = db(db.auth_user.id == db.boxes.user_id and
                  db.boxes.id == box.id).select()[0].user_id
@@ -23,7 +19,7 @@ def construct_box_preview(box):
                A(DIV(box.name,
                      _class='box-name'),
                  _href=URL('box', vars=dict(id=box.id))),
-               DIV(display_name(owner),
+               DIV(owner.display_name,
                    _class='box-owner'),
                DIV(str(len(comics)) + ' comics',
                    _class='box-comic-count'),
@@ -45,7 +41,7 @@ def construct_comic_preview(comic):
                  _href=URL('comic', vars=dict(id=comic.id))),
                DIV('Issue No. ' + str(comic.issue_no),
                    _class='comic-issue-no'),
-               DIV(display_name(owner),
+               DIV(owner.display_name,
                    _class='comic-owner'),
                DIV(_class='clear-floats'),
                _class='comic-preview')

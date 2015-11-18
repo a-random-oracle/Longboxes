@@ -7,7 +7,7 @@
 			<ul class="nav navbar-nav navbar-right">
 				{{
 				if auth.is_logged_in():
-					=LI(A(display_name(auth.user), _href=URL('user', args=['profile'])))
+					=LI(A(get_display_name(auth.user), _href=URL('user', args=['profile'])))
 					=LI(A(T('Sign Out'), _href=URL('user', args=['logout'], vars=dict(_next=URL('index')))))
 					pass
 				else:
