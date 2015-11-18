@@ -176,6 +176,7 @@ def remove_box():
             db(db.boxes.id == box_id).delete()
         else:
             #TODO
+            pass
             
         redirect(URL('user', args=['profile']))
     elif form.errors:
@@ -184,6 +185,149 @@ def remove_box():
         pass
     
     return dict(form=form, box_name=box.name, unfiled_box_link=unfiled_box_link)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@auth.requires_login()
+def new_comic():
+    box_id = request.vars['box'] if request.vars['box'] != None else 1
+    #box = db(db.boxes.id == box_id).select()[0]
+    
+    form = FORM(DIV(INPUT(_name='comic_title', _placeholder='Comic title', _class='form-control'),
+                    _class='form-group'),
+                DIV(INPUT(_name='comic_issue_no', _placeholder='Issue no.', _class='form-control'),
+                    _class='form-group'),
+                DIV(UL(LI(INPUT(_name='comic_writers', _placeholder='Writers', _class='form-control')),
+                       _class='w2p_list',
+                       _style='list-style: none'),
+                    _class='w2p_fw'),
+                DIV(UL(LI(INPUT(_name='comic_artists', _placeholder='Artists', _class='form-control')),
+                       _class='w2p_list',
+                       _style='list-style: none'),
+                    _class='w2p_fw'),
+                DIV(INPUT(_name='comic_publisher', _placeholder='Publisher', _class='form-control'),
+                    _class='form-group'),
+                DIV(TEXTAREA(_name='comic_description', _placeholder='Description', _class='form-control'),
+                    _class='form-group'),
+                DIV(IMG(_id='comic-image-preview', _src='', _hidden=True),
+                    INPUT(_id='comic-image-selector', _name='comic_image', _type='file', _class='upload',
+                          requires=IS_IMAGE(extensions=('png', 'jpg'), maxsize=(300, 400))),
+                    _class='form-group'),
+                INPUT(_name='Add Comic', _type='submit', _value='Add Comic', _class='btn btn-default'),
+                _role='form')
+    
+    if form.accepts(request, session):
+        db.comics.insert(box_id=box_id,
+                         title=form.vars.comic_title,
+                         issue_no=form.vars.comic_issue_no,
+                         writers=form.vars.comic_writers,
+                         artists=form.vars.comic_artists,
+                         publisher=form.vars.comic_publisher,
+                         description=form.vars.comic_description,
+                         image=form.vars.comic_image)
+        
+        redirect(URL('box', vars=dict(id=box_id)))
+    elif form.errors:
+        pass
+    else:
+        pass
+    
+    return dict(form=form)
+
+
+@auth.requires_login()
+def edit_comic():
+    comic_id = request.vars['id'] if request.vars['id'] != None else 1
+    comic = db(db.comics.id == comic_id).select()[0]
+    
+    form = FORM(DIV(INPUT(_name='comic_title', _placeholder='Comic title', _class='form-control'),
+                    _class='form-group'),
+                DIV(INPUT(_name='comic_issue_no', _placeholder='Issue no.', _class='form-control'),
+                    _class='form-group'),
+                DIV(INPUT(_name='comic_writers', _placeholder='Writers', _class='form-control'),
+                    _class='form-group'),
+                DIV(INPUT(_name='comic_artists', _placeholder='Artists', _class='form-control'),
+                    _class='form-group'),
+                DIV(INPUT(_name='comic_publisher', _placeholder='Publisher', _class='form-control'),
+                    _class='form-group'),
+                DIV(INPUT(_name='comic_description', _placeholder='Description', _class='form-control'),
+                    _class='form-group'),
+                INPUT(_name='Confirm', _type='submit', _value='Confirm', _class='btn btn-default'),
+                _role='form')
+    
+    if form.accepts(request, session):
+        #box.update_record(box_id=TODO,
+        #                  title=form.vars.comic_title,
+        #                  issue_no=form.vars.comic_issue_no,
+        #                  writers=form.vars.comic_writers,
+        #                  artists=form.vars.comic_artists,
+        #                  publisher=form.vars.comic_publisher,
+        #                  description=form.vars.comic_description,
+        #                  image=TODO)
+        
+        #redirect(URL('user', args=['profile']))
+        pass
+    elif form.errors:
+        pass
+    else:
+        pass
+    
+    return dict(form=form, comic_title=comic.title)
+
+
+@auth.requires_login()
+def remove_comic():
+    comic_id = request.vars['id'] if request.vars['id'] != None else 1
+    comic = db(db.comics.id == comic_id).select()[0]
+    
+    form = FORM.confirm('Delete This Comic', dict(Cancel=URL(user, args=['profile'])))
+    form.element('input', _type='submit')['_class'] = 'btn btn-danger'
+    
+    if form.accepted:
+        db(db.comics.id == comic_id).delete()
+            
+        redirect(URL('user', args=['profile']))
+    elif form.errors:
+        pass
+    else:
+        pass
+    
+    return dict(form=form, comic_title=comic.title)
 
 
 @cache.action()
