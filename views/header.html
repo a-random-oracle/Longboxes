@@ -3,18 +3,17 @@
 			<div class="navbar-header">
 				<a class="navbar-brand" href="{{=URL('index')}}">Longboxes</a>
 			</div>
-			{{
-			if auth.is_logged_in():
-				login_url = URL('user', args=['logout'], vars=dict(_next=URL('index')))
-				login_text = T('Sign Out')
-				pass
-			else:
-				login_url = URL('user', args=['login'], vars=dict(_next=URL('user', args=['profile'])))
-				login_text = T('Sign In')
-				pass
-			}}
+			
 			<ul class="nav navbar-nav navbar-right">
-				<li><a href="{{=login_url}}">{{=login_text}}</a></li>
+				{{
+				if auth.is_logged_in():
+					=LI(A(display_name(auth.user), _href=URL('user', args=['profile'])))
+					=LI(A(T('Sign Out'), _href=URL('user', args=['logout'], vars=dict(_next=URL('index')))))
+					pass
+				else:
+					=LI(A(T('Sign In'), _href=URL('user', args=['login'], vars=dict(_next=URL('user', args=['profile'])))))
+					pass
+				}}
 			</ul>
 		</div>
 	</nav>
