@@ -55,9 +55,9 @@ def new_box_icon():
                _class='box-preview')
 
 
-def new_comic_icon():
+def new_comic_icon(box):
     return DIV(A(IMG(_src=URL('static', 'images/add_comic.png'),
                      _class='comic-thumbnail'),
-                 _href=URL('new_comic')),
+                 _href=URL('new_comic', vars=dict(box=box.id))),
                DIV(_class='clear-floats'),
                _class='comic-preview')
