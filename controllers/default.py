@@ -86,7 +86,7 @@ def comic():
 
 def user():
     # Use custom handler for user/profile
-    if request.args(0) == 'profile':
+    if auth.is_logged_in() and request.args(0) == 'profile':
         response.view = 'default/profile.html'
         
         users_boxes = db(db.boxes.user_id == auth.user.id).select(db.boxes.ALL,
@@ -164,8 +164,9 @@ def remove_box():
     unfiled_box_link = URL('boxes', vars=dict(id=unfiled_box.id))
     
     form = FORM.confirm('Delete This Box', dict(Cancel=URL(user, args=['profile'])))
+    form.element('input', _type='submit')['_class'] = 'btn btn-danger'
     
-    if form.accepts(request, session):
+    if form.accepted:
         db(db.boxes.id == box_id).delete()
         
         redirect(URL('user', args=['profile']))
