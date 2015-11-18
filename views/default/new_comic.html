@@ -8,25 +8,10 @@
 	</div>
 	
 	{{block page_js}}
+	<script src="{{=URL('static', 'js/image-preview.js')}}" type="text/javascript"></script>
 	<script>
-	/** Image loading as suggested by
-	https://stackoverflow.com/questions/18457340/how-to-preview-selected-image-in-input-type-file-in-popup-using-jquery */
-	
-	function load_image_preview(input) {
-		if (input.files && input.files[0]) {
-			var reader = new FileReader();
-
-			reader.onload = function(e) {
-				$('#comic-image-preview').attr('src', e.target.result);
-				$('#comic-image-preview').attr('hidden', false);
-			}
-
-			reader.readAsDataURL(input.files[0]);
-		}
-	}
-	
-	$("#comic-image-selector").change(function(){
-		load_image_preview(this);
+	$("#comic-image-selector").change(function() {
+		load_image_preview(this, '#comic-image-preview');
 	});
 	</script>
 	{{end page_js}}
