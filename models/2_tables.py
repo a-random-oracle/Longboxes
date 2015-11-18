@@ -7,7 +7,8 @@ db.define_table('boxes',
     Field('user_id', type='reference auth_user'),
     Field('name', type='string'),
     Field('creation_date', type='date', default=request.now),
-    Field('visible', type='boolean')
+    Field('visible', type='boolean'),
+    Field('removable', type='boolean', default=True)
 )
  
 ## Comics
