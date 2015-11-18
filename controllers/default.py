@@ -167,13 +167,16 @@ def remove_box():
     form.element('input', _type='submit')['_class'] = 'btn btn-danger'
     
     if form.accepted:
-        box_contents = db(db.comics.box_id == box_id).select()
-        
-        for comic in box_contents:
-            comic.update_record(box_id=unfiled_box.id)
-        
-        db(db.boxes.id == box_id).delete()
-        
+        if box.removable:
+            box_contents = db(db.comics.box_id == box_id).select()
+            
+            for comic in box_contents:
+                comic.update_record(box_id=unfiled_box.id)
+            
+            db(db.boxes.id == box_id).delete()
+        else:
+            #TODO
+            
         redirect(URL('user', args=['profile']))
     elif form.errors:
         pass
