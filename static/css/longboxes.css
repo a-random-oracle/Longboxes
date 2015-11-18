@@ -11,8 +11,8 @@ img.comic-cover-image {
 div.comic-preview {
 	margin-top: 2%;
 	margin-bottom: 2%;
-	border-style: solid;
-	border-width: thin;
+	/*border-style: solid;
+	border-width: thin;*/
 }
 
 img.comic-thumbnail {
