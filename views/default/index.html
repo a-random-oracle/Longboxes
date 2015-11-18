@@ -1,27 +1,29 @@
 {{extend 'longboxes.html'}}
 
-	<div class="box-collection">
-		<h2>Expanding Collections</h2>
-		{{if len(largest_boxes_html) > 0:}}
-		{{=DIV(_class='col-md-1')}}
-		{{for box_html in largest_boxes_html:}}
-		{{=DIV(box_html, _class='col-sm-4 col-md-2')}}
-		{{pass}}
-		{{=DIV(_class='col-md-1')}}
-		{{pass}}
-
-		{{=DIV(_class='clear-floats')}}
-	</div>
-
-	<div class="box-collection">
-		<h2>New Collections</h2>
-		{{if len(newest_boxes_html) > 0:}}
-		{{=DIV(_class='col-md-1')}}
-		{{for box_html in newest_boxes_html:}}
-		{{=DIV(box_html, _class='col-sm-4 col-md-2')}}
-		{{pass}}
-		{{=DIV(_class='col-md-1')}}
-		{{pass}}
-
-		{{=DIV(_class='clear-floats')}}
+	<div class="container-fluid">
+		<div class="box-collection">
+			<h2>Expanding Collections</h2>
+			{{if len(largest_boxes_html) > 0:}}
+			{{=DIV(_class='col-md-1')}}
+			{{for box_html in largest_boxes_html:}}
+			{{=DIV(box_html, _class='col-sm-4 col-md-2')}}
+			{{pass}}
+			{{=DIV(_class='col-md-1')}}
+			{{pass}}
+	
+			{{=DIV(_class='clear-floats')}}
+		</div>
+	
+		<div class="box-collection">
+			<h2>New Collections</h2>
+			{{if len(newest_boxes_html) > 0:}}
+			{{=DIV(_class='col-md-1')}}
+			{{for box_html in newest_boxes_html:}}
+			{{=DIV(box_html, _class='col-sm-4 col-md-2')}}
+			{{pass}}
+			{{=DIV(_class='col-md-1')}}
+			{{pass}}
+	
+			{{=DIV(_class='clear-floats')}}
+		</div>
 	</div>
