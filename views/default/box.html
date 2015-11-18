@@ -4,8 +4,14 @@
 		<h3 class="text-center"><strong>{{=box.name}}</strong></h3>
 		<p class="text-center">Created on {{=box.creation_date}}</p>
 		<p class="text-center">{{=display_name(owner)}}</p>
-	
+		{{if len(comics_html) > 0:}}
 		{{for comic_html in comics_html:}}
 		{{=DIV(comic_html, _class='col-sm-6 col-md-4')}}
 		{{pass}}
+		{{pass}}
+		{{
+		if owner.id == auth.user.id:
+			=DIV(new_comic_icon(), _class='col-sm-6 col-md-4')
+			pass
+		}}
 	</div>
