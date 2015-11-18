@@ -3,66 +3,7 @@
 import operator
 
 
-# Helper methods
-def construct_box_preview(box):
-    user_id = db(db.auth_user.id == db.boxes.user_id and
-                 db.boxes.id == box.id).select()[0].user_id
-    owner = db(db.auth_user.id == user_id).select()[0]
-    comics = db(db.comics.box_id == box.id).select(db.comics.ALL, orderby=~db.comics.id)
-    
-    if (len(comics) == 0):
-        box_image = IMG(_src=URL('static', 'images/default_box.png'),
-                        _class='box-thumbnail')
-    else:
-        box_image = IMG(_src=URL('download', args=comics[0].image),
-                        _class='box-thumbnail')
-    
-    return DIV(A(box_image,
-                 _href=URL('box', vars=dict(id=box.id))),
-               A(DIV(box.name,
-                     _class='box-name'),
-                 _href=URL('box', vars=dict(id=box.id))),
-               DIV(display_name(owner),
-                   _class='box-owner'),
-               DIV(str(len(comics)) + ' comics',
-                   _class='box-comic-count'),
-               DIV(_class='clear-floats'),
-               _class='box-preview')
-
-
-def construct_comic_preview(comic):
-    box_id = db(db.boxes.id == db.comics.box_id and
-                db.comics.id == comic.id).select()[0].box_id
-    user_id = db(db.auth_user.id == db.boxes.user_id and
-                 db.boxes.id == box_id).select()[0].user_id
-    owner = db(db.auth_user.id == user_id).select()[0]
-    
-    return DIV(A(IMG(_src=URL('download', args=comic.image),
-                     _class='comic-thumbnail'),
-                 _href=URL('comic', vars=dict(id=comic.id))),
-               A(DIV(comic.title, _class='comic-title'),
-                 _href=URL('comic', vars=dict(id=comic.id))),
-               DIV('Issue No. ' + str(comic.issue_no),
-                   _class='comic-issue-no'),
-               DIV(display_name(owner),
-                   _class='comic-owner'),
-               DIV(_class='clear-floats'),
-               _class='comic-preview')
-
-
-def display_name(user):
-    return str(user.first_name + ' ' + user.last_name)
-
-
-
-
-
-
-
-
-
 # Site routes
-
 def index():
     # Get the five largest boxes
     comic_counts = []
@@ -83,7 +24,7 @@ def index():
     
     
     # Get the five newest boxes
-    newest_boxes = db().select(db.boxes.ALL, orderby=db.boxes.creation_date|db.boxes.id)
+    newest_boxes = db().select(db.boxes.ALL, orderby=db.boxes.creation_date|~db.boxes.id)
     
     if len(newest_boxes) >= NUM_NEWEST_BOXES_TO_DISPLAY:
         newest_boxes = newest_boxes[:NUM_NEWEST_BOXES_TO_DISPLAY]
@@ -98,7 +39,7 @@ def index():
 
 
 def search():
-    search = FORM(INPUT(_name='search_term', _placeholder="Search by Name, Artist, Writer or Publisher"),
+    search = FORM(INPUT(_name='search_term', _placeholder='Search by Name, Artist, Writer or Publisher'),
                   INPUT(_name='Search', _type='submit', _value='Search'))
     
     results = []
@@ -122,8 +63,8 @@ def search():
 def box():
     box_id = request.vars['id'] if request.vars['id'] != None else 1
     box = db(db.boxes.id == box_id).select()[0]
-    user_id = db(db.auth_user.id == db.boxes.user_id and
-                 db.boxes.id == box_id).select()[0].user_id
+    user_id = db(db.auth_user.id == db.boxes.user_id
+                 and db.boxes.id == box_id).select()[0].user_id
     owner = db(db.auth_user.id == user_id).select()[0]
     comics = db(db.comics.box_id == box.id).select()
     
@@ -148,7 +89,8 @@ def user():
     if request.args(0) == 'profile':
         response.view = 'default/profile.html'
         
-        users_boxes = db(db.boxes.user_id == auth.user.id).select(db.boxes.ALL, orderby=db.boxes.creation_date)
+        users_boxes = db(db.boxes.user_id == auth.user.id).select(db.boxes.ALL,
+                                                                  orderby=db.boxes.creation_date|~db.boxes.id)
         
         users_boxes_html = []
         for box in users_boxes:
@@ -162,11 +104,12 @@ def user():
     return dict(login_form=login_form)
 
 
+@auth.requires_login()
 def new_box():
-    form = FORM(DIV(INPUT(_name='box_name', _placeholder="Type a name for the box", _class='form-control'),
+    form = FORM(DIV(INPUT(_name='box_name', _placeholder='Box name', _class='form-control'),
                     _class='form-group'),
                 DIV(LABEL(INPUT(_name='visibility', _type='checkbox'),
-                          'Make box public'),
+                          'Allow others to view this box'),
                     _class='checkbox'),
                 INPUT(_name='Add Box', _type='submit', _value='Add Box', _class='btn btn-default'),
                 _role='form')
@@ -175,12 +118,63 @@ def new_box():
         if form.vars.box_name != None:
             new_box_name = form.vars.box_name
             is_public = form.vars.visibility == 'on'
+            db.boxes.insert(user_id=auth.user.id, name=new_box_name, visible=is_public)
     elif form.errors:
         pass
     else:
         pass
     
     return dict(form=form)
+
+
+@auth.requires_login()
+def edit_box():
+    box_id = request.vars['id'] if request.vars['id'] != None else 1
+    box = db(db.boxes.id == box_id).select()[0]
+    
+    form = FORM(DIV(INPUT(_name='box_name', _placeholder=box.name, _class='form-control'),
+                    _class='form-group'),
+                DIV(LABEL(INPUT(_name='visibility', _type='checkbox', value=box.visible),
+                          'Allow others to view this box'),
+                    _class='checkbox'),
+                INPUT(_name='Confirm', _type='submit', _value='Confirm', _class='btn btn-default'),
+                _role='form')
+    
+    if form.accepts(request, session):
+        if form.vars.box_name != None:
+            new_box_name = form.vars.box_name
+            is_public = form.vars.visibility == 'on'
+            box.update_record(name=new_box_name, visible=is_public)
+            
+            redirect(URL('user', args=['profile']))
+    elif form.errors:
+        pass
+    else:
+        pass
+    
+    return dict(form=form, box_name=box.name)
+
+
+@auth.requires_login()
+def remove_box():
+    box_id = request.vars['id'] if request.vars['id'] != None else 1
+    box = db(db.boxes.id == box_id).select()[0]
+    unfiled_box = db(db.boxes.user_id == auth.user.id
+                     and db.boxes.name == DEFAULT_BOX).select()[0]
+    unfiled_box_link = URL('boxes', vars=dict(id=unfiled_box.id))
+    
+    form = FORM.confirm('Delete This Box', dict(Cancel=URL(user, args=['profile'])))
+    
+    if form.accepts(request, session):
+        db(db.boxes.id == box_id).delete()
+        
+        redirect(URL('user', args=['profile']))
+    elif form.errors:
+        pass
+    else:
+        pass
+    
+    return dict(form=form, box_name=box.name, unfiled_box_link=unfiled_box_link)
 
 
 @cache.action()
