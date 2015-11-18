@@ -10,7 +10,7 @@
 		{{pass}}
 		{{pass}}
 		{{
-		if owner.id == auth.user.id:
+		if auth.user and auth.user.id == owner.id:
 			=DIV(new_comic_icon(), _class='col-sm-6 col-md-4')
 			pass
 		}}
