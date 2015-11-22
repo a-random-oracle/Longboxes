@@ -5,10 +5,10 @@
 		<p class="text-center">Issue No. {{=comic.issue_no}}</p>
 		<img class="comic-cover-image" src="{{=URL('download', args=comic.image)}}" />
 		{{if len(comic.writers) > 0:}}
-		<p>Writers: {{=','.join(comic.writers)}}</p>
+		<p>Writers: {{=', '.join(comic.writers)}}</p>
 		{{pass}}
 		{{if len(comic.artists) > 0:}}
-		<p>Writers: {{=','.join(comic.artists)}}</p>
+		<p>Writers: {{=', '.join(comic.artists)}}</p>
 		{{pass}}
 		<p>Publisher: {{=comic.publisher}}</p>
 		<p>{{=comic.description}}</p>
