@@ -5,16 +5,16 @@
 			<strong>{{=comic.title}}</strong>
 			{{
 			if auth.user and auth.user.id == owner.id:
-				=A(SPAN(_class='glyphicon glyphicon-pencil'), _href=URL('edit_comic', vars=dict(id=comic.id)))
-				=A(SPAN(_class='glyphicon glyphicon-trash'), _href=URL('remove_comic', vars=dict(id=comic.id)))
+				=A(SPAN(_class='glyphicon glyphicon-pencil'), _href=URL('comics', 'edit_comic', vars=dict(id=comic.id)))
+				=A(SPAN(_class='glyphicon glyphicon-trash'), _href=URL('comics', 'remove_comic', vars=dict(id=comic.id)))
 				pass
 			else:
-				=A(SPAN(_class='glyphicon glyphicon-share-alt'), _href=URL('copy_comic', vars=dict(id=comic.id)))
+				=A(SPAN(_class='glyphicon glyphicon-share-alt'), _href=URL('comics', 'copy_comic', vars=dict(id=comic.id)))
 				pass
 			}}
 		</h2>
 		<p class="text-center">Issue No. {{=comic.issue_no}}</p>
-		<img class="comic-cover-image" src="{{=URL('download', args=comic.image)}}" />
+		<img class="comic-cover-image" src="{{=URL('main', 'download', args=comic.image)}}" />
 		{{if len(comic.writers) > 0:}}
 		<p>Writers: {{=', '.join(comic.writers)}}</p>
 		{{pass}}

@@ -11,14 +11,14 @@ def construct_box_preview(box):
         box_image = IMG(_src=URL('static', 'images/default_box.png'),
                         _class='box-thumbnail')
     else:
-        box_image = IMG(_src=URL('download', args=comics[0].image),
+        box_image = IMG(_src=URL('main', 'download', args=comics[0].image),
                         _class='box-thumbnail')
     
     return DIV(A(box_image,
-                 _href=URL('box', vars=dict(id=box.id))),
+                 _href=URL('boxes', 'box', vars=dict(id=box.id))),
                A(DIV(box.name,
                      _class='box-name'),
-                 _href=URL('box', vars=dict(id=box.id))),
+                 _href=URL('boxes', 'box', vars=dict(id=box.id))),
                DIV(str(len(comics)) + ' comics',
                    _class='box-comic-count'),
                DIV(A(owner.display_name,
@@ -35,11 +35,11 @@ def construct_comic_preview(comic):
                  db.boxes.id == box_id).select()[0].user_id
     owner = db(db.auth_user.id == user_id).select()[0]
     
-    return DIV(A(IMG(_src=URL('download', args=comic.image),
+    return DIV(A(IMG(_src=URL('main', 'download', args=comic.image),
                      _class='comic-thumbnail'),
-                 _href=URL('comic', vars=dict(id=comic.id))),
+                 _href=URL('comics', 'comic', vars=dict(id=comic.id))),
                A(DIV(comic.title, _class='comic-title'),
-                 _href=URL('comic', vars=dict(id=comic.id))),
+                 _href=URL('comics', 'comic', vars=dict(id=comic.id))),
                DIV('Issue No. ' + str(comic.issue_no),
                    _class='comic-issue-no'),
                DIV(A(owner.display_name,
@@ -52,7 +52,7 @@ def construct_comic_preview(comic):
 def new_box_icon():
     return DIV(A(IMG(_src=URL('static', 'images/add_box.png'),
                      _class='box-thumbnail'),
-                 _href=URL('create_box')),
+                 _href=URL('boxes', 'create_box')),
                DIV(_class='clear-floats'),
                _class='box-preview')
 
@@ -60,6 +60,6 @@ def new_box_icon():
 def new_comic_icon(box):
     return DIV(A(IMG(_src=URL('static', 'images/add_comic.png'),
                      _class='comic-thumbnail'),
-                 _href=URL('create_comic', vars=dict(box=box.id))),
+                 _href=URL('comics', 'create_comic', vars=dict(box=box.id))),
                DIV(_class='clear-floats'),
                _class='comic-preview')
