@@ -18,11 +18,11 @@
 				<ul class="nav navbar-nav navbar-right">
 				{{
 				if auth.is_logged_in():
-					=LI(A(get_display_name(auth.user), _href=URL('user', args=['view_boxes'])))
-					=LI(A(T('Sign Out'), _href=URL('user', args=['logout'], vars=dict(_next=URL('index')))))
+					=LI(A(get_display_name(auth.user), _href=URL('main', 'user', args=['view_boxes'])))
+					=LI(A(T('Sign Out'), _href=URL('main', 'user', args=['logout'], vars=dict(_next=URL('main', 'index')))))
 					pass
 				else:
-					=LI(A(T('Sign In'), _href=URL('user', args=['login'], vars=dict(_next=URL('user', args=['view_boxes'])))))
+					=LI(A(T('Sign In'), _href=URL('main', 'user', args=['login'], vars=dict(_next=URL('main', 'user', args=['view_boxes'])))))
 					pass
 				}}
 				</ul>
