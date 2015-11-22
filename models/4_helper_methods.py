@@ -22,7 +22,7 @@ def construct_box_preview(box):
                DIV(str(len(comics)) + ' comics',
                    _class='box-comic-count'),
                DIV(A(owner.display_name,
-                     _href=URL('user', args=['profile'], vars=dict(id=owner.id))),
+                     _href=URL('user', args=['view_boxes'], vars=dict(id=owner.id))),
                    _class='box-owner'),
                DIV(_class='clear-floats'),
                _class='box-preview')
@@ -42,7 +42,8 @@ def construct_comic_preview(comic):
                  _href=URL('comic', vars=dict(id=comic.id))),
                DIV('Issue No. ' + str(comic.issue_no),
                    _class='comic-issue-no'),
-               DIV(owner.display_name,
+               DIV(A(owner.display_name,
+                     _href=URL('user', args=['view_boxes'], vars=dict(id=owner.id))),
                    _class='comic-owner'),
                DIV(_class='clear-floats'),
                _class='comic-preview')

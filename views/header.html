@@ -10,7 +10,7 @@
 				<a class="navbar-brand" href="{{=URL('index')}}">Longboxes</a>
 			</div>
 			
-			<ul class="nav navbar-nav">
+			<ul class="nav navbar-nav navbar-collapse">
         <li><a href="{{=URL('search')}}">Search</a></li>
       </ul>
 			
@@ -18,11 +18,11 @@
 				<ul class="nav navbar-nav navbar-right">
 				{{
 				if auth.is_logged_in():
-					=LI(A(get_display_name(auth.user), _href=URL('user', args=['profile'])))
+					=LI(A(get_display_name(auth.user), _href=URL('user', args=['view_boxes'])))
 					=LI(A(T('Sign Out'), _href=URL('user', args=['logout'], vars=dict(_next=URL('index')))))
 					pass
 				else:
-					=LI(A(T('Sign In'), _href=URL('user', args=['login'], vars=dict(_next=URL('user', args=['profile'])))))
+					=LI(A(T('Sign In'), _href=URL('user', args=['login'], vars=dict(_next=URL('user', args=['view_boxes'])))))
 					pass
 				}}
 				</ul>
