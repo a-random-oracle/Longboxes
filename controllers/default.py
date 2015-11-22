@@ -345,6 +345,41 @@ def remove_comic():
     return dict(form=form, comic_title=comic.title)
 
 
+@auth.requires_login()
+def copy_comic():
+    comic_id = request.vars['id'] if request.vars['id'] != None else 1
+    comic = db(db.comics.id == comic_id).select()[0]
+    boxes = db(db.boxes.user_id == auth.user.id).select()
+    
+    box_options = []
+    for box in boxes:
+        box_options.append(OPTION(box.name, _value=box.id))
+        
+    form = FORM(DIV(LABEL('Select a box to copy the comic to:'),
+                    SELECT(box_options, _name='selected_box', _class='form-control'),
+                _class='form-group'),
+                INPUT(_name='Copy Comic', _type='submit', _value='Copy Comic', _class='btn btn-default'),
+                _role='form')
+    
+    if form.accepts(request, session):
+        clone_id = db.comics.insert(box_id=form.vars.selected_box,
+                                    title=comic.title,
+                                    issue_no=comic.issue_no,
+                                    writers=comic.writers,
+                                    artists=comic.artists,
+                                    publisher=comic.publisher,
+                                    description=comic.description,
+                                    image=comic.image)
+            
+        redirect(URL('comic', vars=dict(id=clone_id)))
+    elif form.errors:
+        pass
+    else:
+        pass
+    
+    return dict(form=form, comic_title=comic.title)
+
+
 @cache.action()
 def download():
     return response.download(request, db)
