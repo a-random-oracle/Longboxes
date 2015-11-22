@@ -52,7 +52,7 @@ response.form_label_separator = myconf.take('forms.separator')
 
 from gluon.tools import Auth, Service, PluginManager
 
-auth = Auth(db)
+auth = Auth(db, controller='main')
 service = Service()
 plugins = PluginManager()
 
