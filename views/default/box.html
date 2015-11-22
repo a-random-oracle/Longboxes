@@ -5,8 +5,8 @@
 			<strong>{{=box.name}}</strong>
 			{{
 			if auth.user and auth.user.id == owner.id:
-				=A('', _class='glyphicon glyphicon-pencil', _href=URL('edit_box', vars=dict(id=box.id)))
-				=A('', _class='glyphicon glyphicon-trash', _href=URL('remove_box', vars=dict(id=box.id)))
+				=A(SPAN(_class='glyphicon glyphicon-pencil'), _href=URL('edit_box', vars=dict(id=box.id)))
+				=A(SPAN(_class='glyphicon glyphicon-trash'), _href=URL('remove_box', vars=dict(id=box.id)))
 			pass
 			}}
 		</h3>
