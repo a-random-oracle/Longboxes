@@ -1,0 +1,25 @@
+{{extend 'longboxes.html'}}
+
+	<div class="container-fluid">
+		<div class="box-collection">
+			<h2>All Comics</h2>
+			{{if len(users_boxes_html) > 0:}}
+			{{for box_comics in users_boxes_html:}}
+			<div class="col-md-12">
+				<h3>{{=box_comics[0].name}}</h3>
+				{{if len(box_comics[1]) > 0:}}
+				{{for comic_html in box_comics[1]:}}
+				{{=DIV(comic_html, _class='col-sm-6 col-md-4')}}
+				{{pass}}
+				{{else:}}
+				{{=DIV('Empty', _class='col-md-12')}}
+				{{pass}}
+			</div>
+			{{pass}}
+			{{pass}}
+			<div class="col-md-12">
+				<h3>Options</h3>
+				{{=DIV(new_box_icon(), _class='col-sm-6 col-md-4')}}
+			</div>
+		</div>
+	</div>

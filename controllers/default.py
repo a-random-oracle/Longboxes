@@ -112,6 +112,25 @@ def user():
             users_boxes_html.append(construct_box_preview(box))
         
         return dict(users_boxes_html=users_boxes_html)
+    # Use custom handler for user/profile
+    elif request.args(0) == 'view_all':
+        user_id = request.vars['id'] if request.vars['id'] != None else 1
+        user = db(db.auth_user.id == user_id).select()[0]
+        
+        response.view = 'default/view_all.html'
+        
+        users_boxes = db(db.boxes.user_id == user_id).select(db.boxes.ALL, orderby=db.boxes.creation_date|~db.boxes.id)
+        
+        users_boxes_html = []
+        for box in users_boxes:
+            box_comics_html = []
+            
+            for comic in db(db.comics.box_id == box.id).select():
+                box_comics_html.append(construct_comic_preview(comic))
+               
+            users_boxes_html.append((box, box_comics_html))
+        
+        return dict(users_boxes_html=users_boxes_html)
     
     
     login_form = auth()
