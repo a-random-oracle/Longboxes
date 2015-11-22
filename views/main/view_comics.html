@@ -18,9 +18,10 @@
 			</div>
 			{{pass}}
 			{{pass}}
-			<div class="col-md-12">
-				<h3>Options</h3>
-				{{=DIV(new_box_icon(), _class='col-sm-6 col-md-4')}}
-			</div>
+			{{
+			if auth.user and auth.user.id == owner.id:
+				=DIV(H3('Options'), DIV(new_box_icon(), _class='col-sm-6 col-md-4'), _class='col-md-12')
+				pass
+			}}
 		</div>
 	</div>

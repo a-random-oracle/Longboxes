@@ -9,6 +9,10 @@
 			{{=DIV(box_html, _class='col-sm-4 col-md-2')}}
 			{{pass}}
 			{{pass}}
-			{{=DIV(new_box_icon(), _class='col-sm-4 col-md-2')}}
+			{{
+			if auth.user and auth.user.id == owner.id:
+				=DIV(new_box_icon(), _class='col-sm-4 col-md-2')
+				pass
+			}}
 		</div>
 	</div>
