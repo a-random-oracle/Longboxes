@@ -1,7 +1,7 @@
 {{extend 'longboxes.html'}}
 
 	<div class="container-fluid">
-		<h3 class="text-center">
+		<h2 class="text-center">
 			<strong>{{=comic.title}}</strong>
 			{{
 			if auth.user and auth.user.id == owner.id:
@@ -9,7 +9,7 @@
 				=A(SPAN(_class='glyphicon glyphicon-trash'), _href=URL('remove_comic', vars=dict(id=comic.id)))
 			pass
 			}}
-		</h3>
+		</h2>
 		<p class="text-center">Issue No. {{=comic.issue_no}}</p>
 		<img class="comic-cover-image" src="{{=URL('download', args=comic.image)}}" />
 		{{if len(comic.writers) > 0:}}

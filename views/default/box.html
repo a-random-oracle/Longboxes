@@ -1,7 +1,7 @@
 {{extend 'longboxes.html'}}
 
 	<div class="container-fluid">
-		<h3 class="text-center">
+		<h2 class="text-center">
 			<strong>{{=box.name}}</strong>
 			{{
 			if auth.user and auth.user.id == owner.id:
@@ -9,7 +9,7 @@
 				=A(SPAN(_class='glyphicon glyphicon-trash'), _href=URL('remove_box', vars=dict(id=box.id)))
 			pass
 			}}
-		</h3>
+		</h2>
 		<p class="text-center">Created on {{=box.creation_date}}</p>
 		<p class="text-center">{{=A(owner.display_name, _href=URL('user', args=['profile'], vars=dict(id=owner.id)))}}</p>
 		{{if len(comics_html) > 0:}}
