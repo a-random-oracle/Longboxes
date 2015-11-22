@@ -39,18 +39,27 @@ def index():
 
 
 def search():
-    search = FORM(INPUT(_name='search_term', _placeholder='Search by Name, Artist, Writer or Publisher'),
-                  INPUT(_name='Search', _type='submit', _value='Search'))
+    DIV(INPUT(_name='box_name', _placeholder='Box name', _class='form-control'),
+                    _class='form-group'),
+    
+    search = FORM(INPUT(_id='site-search', _name='search_term', _placeholder='Search by Name, Artist, Writer or Publisher', _class='form-control'),
+                  INPUT(_name='Search', _type='submit', _value='Search', _class='btn btn-default'),
+                  _class='form-inline')
     
     results = []
     
-    if search.vars != None and search.vars.search_term != None:
-        query_term = '%' + search.vars.search_term + '%'
-        match_title = db(db.comics.title.like(query_term)).select()
-        match_writer = db(db.comics.writers.like(query_term)).select()
-        match_artist = db(db.comics.artists.like(query_term)).select()
-        match_publisher = db(db.comics.publisher.like(query_term)).select()
-        results = match_title | match_writer | match_artist | match_publisher
+    if search.accepts(request, session):
+        if search.vars.search_term != None:
+            query_term = '%' + search.vars.search_term + '%'
+            match_title = db(db.comics.title.like(query_term)).select()
+            match_writer = db(db.comics.writers.like(query_term)).select()
+            match_artist = db(db.comics.artists.like(query_term)).select()
+            match_publisher = db(db.comics.publisher.like(query_term)).select()
+            results = match_title | match_writer | match_artist | match_publisher
+    elif search.errors:
+        pass
+    else:
+        pass
     
     results_html = []
     if len(results) > 0:
@@ -146,7 +155,7 @@ def edit_box():
             is_public = form.vars.visibility == 'on'
             box.update_record(name=new_box_name, visible=is_public)
             
-            redirect(URL('user', args=['profile']))
+            redirect(URL('box', vars=dict(id=box_id)))
     elif form.errors:
         pass
     else:
@@ -187,46 +196,9 @@ def remove_box():
     return dict(form=form, box_name=box.name, unfiled_box_link=unfiled_box_link)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @auth.requires_login()
 def new_comic():
     box_id = request.vars['box'] if request.vars['box'] != None else 1
-    #box = db(db.boxes.id == box_id).select()[0]
     
     form = FORM(DIV(INPUT(_name='comic_title', _placeholder='Comic title', _class='form-control'),
                     _class='form-group'),
@@ -252,16 +224,16 @@ def new_comic():
                 _role='form')
     
     if form.accepts(request, session):
-        db.comics.insert(box_id=box_id,
-                         title=form.vars.comic_title,
-                         issue_no=form.vars.comic_issue_no,
-                         writers=form.vars.comic_writers,
-                         artists=form.vars.comic_artists,
-                         publisher=form.vars.comic_publisher,
-                         description=form.vars.comic_description,
-                         image=form.vars.comic_image)
+        comic_id = db.comics.insert(box_id=box_id,
+                                    title=form.vars.comic_title,
+                                    issue_no=form.vars.comic_issue_no,
+                                    writers=form.vars.comic_writers,
+                                    artists=form.vars.comic_artists,
+                                    publisher=form.vars.comic_publisher,
+                                    description=form.vars.comic_description,
+                                    image=form.vars.comic_image)
         
-        redirect(URL('comic', vars=dict(id=comic.id)))
+        redirect(URL('comic', vars=dict(id=comic_id)))
     elif form.errors:
         pass
     else:
@@ -339,7 +311,7 @@ def remove_comic():
     if form.accepted:
         db(db.comics.id == comic_id).delete()
             
-        redirect(URL('user', args=['profile']))
+        redirect(URL('box', vars=dict(id=comic.box_id)))
     elif form.errors:
         pass
     else:
