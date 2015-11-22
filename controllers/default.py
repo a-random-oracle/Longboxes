@@ -88,9 +88,13 @@ def box():
 def comic():
     comic_id = request.vars['id'] if request.vars['id'] != None else 1
     comic = db(db.comics.id == comic_id).select()[0]
+    box = db(db.boxes.id == comic.box_id).select()[0]
+    user_id = db(db.auth_user.id == db.boxes.user_id
+                 and db.boxes.id == comic.box_id).select()[0].user_id
+    owner = db(db.auth_user.id == user_id).select()[0]
     
     response.title = comic.title
-    return dict(comic=comic)
+    return dict(comic=comic, owner=owner)
 
 
 def user():

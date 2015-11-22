@@ -1,7 +1,15 @@
 {{extend 'longboxes.html'}}
 
 	<div class="container-fluid">
-		<h3 class="text-center"><strong>{{=box.name}}</strong> <a class="glyphicon glyphicon-pencil" href="{{=URL('edit_box', vars=dict(id=box.id))}}"></a></h3>
+		<h3 class="text-center">
+			<strong>{{=box.name}}</strong>
+			{{
+			if auth.user and auth.user.id == owner.id:
+				=A('', _class='glyphicon glyphicon-pencil', _href=URL('edit_box', vars=dict(id=box.id)))
+				=A('', _class='glyphicon glyphicon-trash', _href=URL('remove_box', vars=dict(id=box.id)))
+			pass
+			}}
+		</h3>
 		<p class="text-center">Created on {{=box.creation_date}}</p>
 		<p class="text-center">{{=owner.display_name}}</p>
 		{{if len(comics_html) > 0:}}
