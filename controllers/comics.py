@@ -2,9 +2,9 @@
 
 
 # Site routes
-def index():
-    redirect(URL('main', 'index'))
-    return dict()
+#def index():
+#    redirect(URL('main', 'index'))
+#    return dict()
 
 def comic():
     comic_id = request.vars['id'] if request.vars['id'] != None else 1
@@ -19,7 +19,7 @@ def comic():
 
 
 @auth.requires_login()
-def create_comic():
+def create():
     box_id = request.vars['box'] if request.vars['box'] != None else 1
     
     form = FORM(DIV(INPUT(_name='comic_title', _placeholder='Comic title', _class='form-control'),
@@ -65,7 +65,7 @@ def create_comic():
 
 
 @auth.requires_login()
-def edit_comic():
+def edit():
     comic_id = request.vars['id'] if request.vars['id'] != None else 1
     comic = db(db.comics.id == comic_id).select()[0]
     
@@ -123,7 +123,7 @@ def edit_comic():
 
 
 @auth.requires_login()
-def remove_comic():
+def remove():
     comic_id = request.vars['id'] if request.vars['id'] != None else 1
     comic = db(db.comics.id == comic_id).select()[0]
     
@@ -143,7 +143,7 @@ def remove_comic():
 
 
 @auth.requires_login()
-def copy_comic():
+def copy():
     comic_id = request.vars['id'] if request.vars['id'] != None else 1
     comic = db(db.comics.id == comic_id).select()[0]
     boxes = db(db.boxes.user_id == auth.user.id).select()

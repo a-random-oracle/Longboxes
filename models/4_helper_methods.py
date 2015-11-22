@@ -52,7 +52,7 @@ def construct_comic_preview(comic):
 def new_box_icon():
     return DIV(A(IMG(_src=URL('static', 'images/add_box.png'),
                      _class='box-thumbnail'),
-                 _href=URL('boxes', 'create_box')),
+                 _href=URL('boxes', 'create')),
                DIV(_class='clear-floats'),
                _class='box-preview')
 
@@ -60,6 +60,6 @@ def new_box_icon():
 def new_comic_icon(box):
     return DIV(A(IMG(_src=URL('static', 'images/add_comic.png'),
                      _class='comic-thumbnail'),
-                 _href=URL('comics', 'create_comic', vars=dict(box=box.id))),
+                 _href=URL('comics', 'create', vars=dict(box=box.id))),
                DIV(_class='clear-floats'),
                _class='comic-preview')

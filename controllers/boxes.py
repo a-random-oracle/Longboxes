@@ -2,9 +2,9 @@
 
 
 # Site routes
-def index():
-    redirect(URL('main', 'index'))
-    return dict()
+#def index():
+#    redirect(URL('main', 'index'))
+#    return dict()
 
 def box():
     box_id = request.vars['id'] if request.vars['id'] != None else 1
@@ -23,7 +23,7 @@ def box():
 
 
 @auth.requires_login()
-def create_box():
+def create():
     form = FORM(DIV(INPUT(_name='box_name', _placeholder='Box name', _class='form-control'),
                     _class='form-group'),
                 DIV(LABEL(INPUT(_name='visibility', _type='checkbox'),
@@ -48,7 +48,7 @@ def create_box():
 
 
 @auth.requires_login()
-def edit_box():
+def edit():
     box_id = request.vars['id'] if request.vars['id'] != None else 1
     box = db(db.boxes.id == box_id).select()[0]
     
@@ -76,7 +76,7 @@ def edit_box():
 
 
 @auth.requires_login()
-def remove_box():
+def remove():
     box_id = request.vars['id'] if request.vars['id'] != None else 1
     box = db(db.boxes.id == box_id).select()[0]
     unfiled_box = db(db.boxes.user_id == auth.user.id

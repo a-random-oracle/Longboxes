@@ -5,11 +5,11 @@
 			<strong>{{=comic.title}}</strong>
 			{{
 			if auth.user and auth.user.id == owner.id:
-				=A(SPAN(_class='glyphicon glyphicon-pencil'), _href=URL('comics', 'edit_comic', vars=dict(id=comic.id)))
-				=A(SPAN(_class='glyphicon glyphicon-trash'), _href=URL('comics', 'remove_comic', vars=dict(id=comic.id)))
+				=A(SPAN(_class='glyphicon glyphicon-pencil'), _href=URL('comics', 'edit', vars=dict(id=comic.id)))
+				=A(SPAN(_class='glyphicon glyphicon-trash'), _href=URL('comics', 'remove', vars=dict(id=comic.id)))
 				pass
 			else:
-				=A(SPAN(_class='glyphicon glyphicon-share-alt'), _href=URL('comics', 'copy_comic', vars=dict(id=comic.id)))
+				=A(SPAN(_class='glyphicon glyphicon-share-alt'), _href=URL('comics', 'copy', vars=dict(id=comic.id)))
 				pass
 			}}
 		</h2>
