@@ -24,7 +24,7 @@ def index():
     
     
     # Get the five newest boxes
-    newest_boxes = db().select(db.boxes.ALL, orderby=db.boxes.creation_date|~db.boxes.id)
+    newest_boxes = db().select(db.boxes.ALL, orderby=~db.boxes.creation_date|~db.boxes.id)
     
     if len(newest_boxes) >= NUM_NEWEST_BOXES_TO_DISPLAY:
         newest_boxes = newest_boxes[:NUM_NEWEST_BOXES_TO_DISPLAY]
