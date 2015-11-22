@@ -99,11 +99,13 @@ def comic():
 
 def user():
     # Use custom handler for user/profile
-    if auth.is_logged_in() and request.args(0) == 'profile':
+    if request.args(0) == 'profile':
+        user_id = request.vars['id'] if request.vars['id'] != None else 1
+        user = db(db.auth_user.id == user_id).select()[0]
+        
         response.view = 'default/profile.html'
         
-        users_boxes = db(db.boxes.user_id == auth.user.id).select(db.boxes.ALL,
-                                                                  orderby=db.boxes.creation_date|~db.boxes.id)
+        users_boxes = db(db.boxes.user_id == user_id).select(db.boxes.ALL, orderby=db.boxes.creation_date|~db.boxes.id)
         
         users_boxes_html = []
         for box in users_boxes:

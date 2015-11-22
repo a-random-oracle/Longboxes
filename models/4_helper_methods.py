@@ -19,10 +19,11 @@ def construct_box_preview(box):
                A(DIV(box.name,
                      _class='box-name'),
                  _href=URL('box', vars=dict(id=box.id))),
-               DIV(owner.display_name,
-                   _class='box-owner'),
                DIV(str(len(comics)) + ' comics',
                    _class='box-comic-count'),
+               DIV(A(owner.display_name,
+                     _href=URL('user', args=['profile'], vars=dict(id=owner.id))),
+                   _class='box-owner'),
                DIV(_class='clear-floats'),
                _class='box-preview')
 

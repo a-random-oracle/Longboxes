@@ -11,7 +11,7 @@
 			}}
 		</h3>
 		<p class="text-center">Created on {{=box.creation_date}}</p>
-		<p class="text-center">{{=owner.display_name}}</p>
+		<p class="text-center">{{=A(owner.display_name, _href=URL('user', args=['profile'], vars=dict(id=owner.id)))}}</p>
 		{{if len(comics_html) > 0:}}
 		{{for comic_html in comics_html:}}
 		{{=DIV(comic_html, _class='col-sm-6 col-md-4')}}
