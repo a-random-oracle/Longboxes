@@ -10,11 +10,11 @@
 				<a class="navbar-brand" href="{{=URL('index')}}">Longboxes</a>
 			</div>
 			
-			<ul class="nav navbar-nav navbar-collapse">
-        <li><a href="{{=URL('search')}}">Search</a></li>
-      </ul>
-			
 			<div id="navbar" class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+        	<li><a href="{{=URL('search')}}">Search</a></li>
+      	</ul>
+				
 				<ul class="nav navbar-nav navbar-right">
 				{{
 				if auth.is_logged_in():
