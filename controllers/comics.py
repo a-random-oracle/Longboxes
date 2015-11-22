@@ -100,7 +100,7 @@ def edit():
                 DIV(TEXTAREA(_name='comic_description', _value=comic.description, _class='form-control'),
                     _class='form-group'),
                 DIV(INPUT(_name='Edit Image', _value='Edit Image', _class='btn btn-default',
-                          _onclick='location.href="' + URL('#') + '"'),
+                          _onclick='location.href="' + URL('comics', 'edit_image', vars=dict(id=comic.id)) + '"'),
                     _class='form-group'),
                 INPUT(_name='Confirm', _type='submit', _value='Confirm', _class='btn btn-default'),
                 _role='form')
@@ -112,6 +112,30 @@ def edit():
                             artists=form.vars.comic_artists,
                             publisher=form.vars.comic_publisher,
                             description=form.vars.comic_description)
+        
+        redirect(URL('comics', 'comic', vars=dict(id=comic.id)))
+    elif form.errors:
+        pass
+    else:
+        pass
+    
+    return dict(form=form, comic_title=comic.title)
+
+
+@auth.requires_login()
+def edit_image():
+    comic_id = request.vars['id'] if request.vars['id'] != None else 1
+    comic = db(db.comics.id == comic_id).select()[0]
+    
+    form = FORM(DIV(IMG(_id='comic-image-preview', _src='', _hidden=True),
+                    INPUT(_id='comic-image-selector', _name='comic_image', _type='file', _class='upload',
+                          requires=IS_IMAGE(extensions=('png', 'jpg'), maxsize=(300, 400))),
+                    _class='form-group'),
+                INPUT(_name='Confirm', _type='submit', _value='Confirm', _class='btn btn-default'),
+                _role='form')
+    
+    if form.accepts(request, session):
+        comic.update_record(image=form.vars.comic_image)
         
         redirect(URL('comics', 'comic', vars=dict(id=comic.id)))
     elif form.errors:
