@@ -120,7 +120,7 @@ def user():
 
 
 @auth.requires_login()
-def new_box():
+def create_box():
     form = FORM(DIV(INPUT(_name='box_name', _placeholder='Box name', _class='form-control'),
                     _class='form-group'),
                 DIV(LABEL(INPUT(_name='visibility', _type='checkbox'),
@@ -131,9 +131,11 @@ def new_box():
     
     if form.accepts(request, session):
         if form.vars.box_name != None:
-            new_box_name = form.vars.box_name
-            is_public = form.vars.visibility == 'on'
-            db.boxes.insert(user_id=auth.user.id, name=new_box_name, visible=is_public)
+            box_id = db.boxes.insert(user_id=auth.user.id,
+                                     name=form.vars.box_name,
+                                     visible=form.vars.visibility == 'on')
+            
+            redirect(URL('box', vars=dict(id=box_id)))
     elif form.errors:
         pass
     else:
@@ -203,7 +205,7 @@ def remove_box():
 
 
 @auth.requires_login()
-def new_comic():
+def create_comic():
     box_id = request.vars['box'] if request.vars['box'] != None else 1
     
     form = FORM(DIV(INPUT(_name='comic_title', _placeholder='Comic title', _class='form-control'),
