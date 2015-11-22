@@ -166,7 +166,7 @@ def edit_box():
     box_id = request.vars['id'] if request.vars['id'] != None else 1
     box = db(db.boxes.id == box_id).select()[0]
     
-    form = FORM(DIV(INPUT(_name='box_name', _placeholder=box.name, _class='form-control'),
+    form = FORM(DIV(INPUT(_name='box_name', value=box.name, _class='form-control'),
                     _class='form-group'),
                 DIV(LABEL(INPUT(_name='visibility', _type='checkbox', value=box.visible),
                           'Allow others to view this box'),
