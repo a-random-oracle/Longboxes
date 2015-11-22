@@ -2,9 +2,9 @@
 
 
 # Site routes
-#def index():
-#    redirect(URL('main', 'index'))
-#    return dict()
+def index():
+    redirect(URL('main', 'index'))
+    return dict()
 
 def box():
     box_id = request.vars['id'] if request.vars['id'] != None else 1
