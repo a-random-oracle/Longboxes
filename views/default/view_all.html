@@ -6,7 +6,7 @@
 			{{if len(users_boxes_html) > 0:}}
 			{{for box_comics in users_boxes_html:}}
 			<div class="col-md-12">
-				<h3>{{=box_comics[0].name}}</h3>
+				<h3>{{=A(box_comics[0].name, _href=URL('box', vars=dict(id=box_comics[0].id)))}}</h3>
 				{{if len(box_comics[1]) > 0:}}
 				{{for comic_html in box_comics[1]:}}
 				{{=DIV(comic_html, _class='col-sm-6 col-md-4')}}
