@@ -1,7 +1,7 @@
 {{extend 'longboxes.html'}}
 
 	<div class="container-fluid">
-		<h3 class="text-center"><strong>{{=box.name}}</strong></h3>
+		<h3 class="text-center"><strong>{{=box.name}}</strong> <a class="glyphicon glyphicon-pencil" href="{{=URL('edit_box', vars=dict(id=box.id))}}"></a></h3>
 		<p class="text-center">Created on {{=box.creation_date}}</p>
 		<p class="text-center">{{=owner.display_name}}</p>
 		{{if len(comics_html) > 0:}}
