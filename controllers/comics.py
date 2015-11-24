@@ -85,70 +85,59 @@ def edit():
         for artist in comic.artists:
             artists += LI(INPUT(_name='comic_artists', _value=artist, _class='form-control'))
     
-    form = FORM(DIV(INPUT(_name='comic_title', _value=comic.title, _class='form-control'),
-                    _class='form-group'),
-                DIV(INPUT(_name='comic_issue_no', _value=comic.issue_no, _class='form-control'),
-                    _class='form-group'),
-                DIV(UL(writers,
-                       _class='w2p_list',
-                       _style='list-style: none'),
-                    _class='w2p_fw'),
-                DIV(UL(artists,
-                       _class='w2p_list',
-                       _style='list-style: none'),
-                    _class='w2p_fw'),
-                DIV(INPUT(_name='comic_publisher', _value=comic.publisher, _class='form-control'),
-                    _class='form-group'),
-                DIV(TEXTAREA(_name='comic_description', _value=comic.description, _class='form-control'),
-                    _class='form-group'),
-                DIV(INPUT(_name='Edit Image', _value='Edit Image', _class='btn btn-default',
-                          _onclick='location.href="' + URL('comics', 'edit_image', vars=dict(id=comic.id, box_id=box_id)) + '"'),
-                    _class='form-group'),
-                INPUT(_name='Confirm', _type='submit', _value='Confirm', _class='btn btn-default'),
-                _role='form')
+    edit_comic = FORM(DIV(INPUT(_name='comic_title', _value=comic.title, _class='form-control'),
+                          _class='form-group'),
+                      DIV(INPUT(_name='comic_issue_no', _value=comic.issue_no, _class='form-control'),
+                          _class='form-group'),
+                      DIV(UL(writers,
+                             _class='w2p_list',
+                             _style='list-style: none'),
+                          _class='w2p_fw'),
+                      DIV(UL(artists,
+                             _class='w2p_list',
+                             _style='list-style: none'),
+                          _class='w2p_fw'),
+                      DIV(INPUT(_name='comic_publisher', _value=comic.publisher, _class='form-control'),
+                          _class='form-group'),
+                      DIV(TEXTAREA(_name='comic_description', _value=comic.description, _class='form-control'),
+                          _class='form-group'),
+                      DIV(IMG(_id='comic-image-preview', _src='', _hidden=True),
+                          INPUT(_id='comic-image-selector', _name='comic_image', _type='file', _class='upload',
+                                requires=IS_IMAGE(extensions=('png', 'jpg'), maxsize=(300, 400))),
+                          _class='form-group'),
+                      INPUT(_name='Confirm', _type='submit', _value='Confirm', _class='btn btn-default'),
+                      _role='form')
     
-    if form.accepts(request, session):
-        comic.update_record(title=form.vars.comic_title,
-                            issue_no=form.vars.comic_issue_no,
-                            writers=form.vars.comic_writers,
-                            artists=form.vars.comic_artists,
-                            publisher=form.vars.comic_publisher,
-                            description=form.vars.comic_description)
+    # Errors are handled manually here to work around the image error issue (more details below)
+    if edit_comic.accepts(request, session, hideerror=True):
+        comic.update_record(title=edit_comic.vars.comic_title,
+                            issue_no=edit_comic.vars.comic_issue_no,
+                            writers=edit_comic.vars.comic_writers,
+                            artists=edit_comic.vars.comic_artists,
+                            publisher=edit_comic.vars.comic_publisher,
+                            description=edit_comic.vars.comic_description,
+                            image=edit_comic.vars.comic_image)
         
         redirect(URL('comics', 'comic', vars=dict(id=comic.id, box_id=box_id)))
-    elif form.errors:
-        pass
+    elif edit_comic.errors:
+        # If the only error is the image field, and occurs because no image has
+        # been supplied, ignore the error
+        if (len(edit_comic.errors) == 1
+            and 'comic_image' in edit_comic.errors
+            and edit_comic.vars.comic_image == ''):
+            comic.update_record(title=edit_comic.vars.comic_title,
+                            issue_no=edit_comic.vars.comic_issue_no,
+                            writers=edit_comic.vars.comic_writers,
+                            artists=edit_comic.vars.comic_artists,
+                            publisher=edit_comic.vars.comic_publisher,
+                            description=edit_comic.vars.comic_description)
+        
+            redirect(URL('comics', 'comic', vars=dict(id=comic.id, box_id=box_id)))
     else:
         pass
     
     response.title = 'Comic Editing'
-    return dict(form=form, comic_title=comic.title)
-
-
-@auth.requires_login()
-def edit_image():
-    box_id = request.vars['box_id'] if request.vars['box_id'] != None else 1
-    comic_id = request.vars['id'] if request.vars['id'] != None else 1
-    comic = db(db.comics.id == comic_id).select()[0]
-    
-    form = FORM(DIV(IMG(_id='comic-image-preview', _src='', _hidden=True),
-                    INPUT(_id='comic-image-selector', _name='comic_image', _type='file', _class='upload',
-                          requires=IS_IMAGE(extensions=('png', 'jpg'), maxsize=(300, 400))),
-                    _class='form-group'),
-                INPUT(_name='Confirm', _type='submit', _value='Confirm', _class='btn btn-default'),
-                _role='form')
-    
-    if form.accepts(request, session):
-        comic.update_record(image=form.vars.comic_image)
-        
-        redirect(URL('comics', 'comic', vars=dict(id=comic.id, box_id=box_id)))
-    elif form.errors:
-        pass
-    else:
-        pass
-    
-    response.title = 'Comic Editing'
-    return dict(form=form, comic_title=comic.title)
+    return dict(edit_comic=edit_comic, comic_title=comic.title)
 
 
 @auth.requires_login()
