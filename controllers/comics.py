@@ -61,6 +61,7 @@ def create():
     else:
         pass
     
+    response.title = 'Comic Creation'
     return dict(form=form)
 
 
@@ -120,6 +121,7 @@ def edit():
     else:
         pass
     
+    response.title = 'Comic Editing'
     return dict(form=form, comic_title=comic.title)
 
 
@@ -145,6 +147,7 @@ def edit_image():
     else:
         pass
     
+    response.title = 'Comic Editing'
     return dict(form=form, comic_title=comic.title)
 
 
@@ -184,6 +187,7 @@ def remove():
     else:
         pass
     
+    response.title = 'Comic Removal'
     return dict(remove_from_box=remove_from_box, remove_entirely=remove_entirely, comic_title=comic.title)
 
 
@@ -218,6 +222,7 @@ def remove_entirely():
     else:
         pass
     
+    response.title = 'Comic Deletion'
     return dict(delete_comic=delete_comic, cancel=cancel, comic_title=comic.title)
 
 
@@ -262,6 +267,7 @@ def copy():
     else:
         pass
     
+    response.title = 'Comic Copying'
     return dict(form=form, comic_title=comic.title)
 
 
@@ -294,4 +300,5 @@ def move():
     else:
         pass
     
+    response.title = 'Comic Moving'
     return dict(form=form, comic_title=comic.title)

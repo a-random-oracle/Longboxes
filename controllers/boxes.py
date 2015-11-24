@@ -43,6 +43,7 @@ def create():
     else:
         pass
     
+    response.title = 'Box Creation'
     return dict(form=form)
 
 
@@ -71,6 +72,7 @@ def edit():
     else:
         pass
     
+    response.title = 'Box Editing'
     return dict(form=form, box_name=box.name)
 
 
@@ -108,4 +110,5 @@ def remove():
     else:
         pass
     
+    response.title = 'Box Deletion'
     return dict(form=form, box_name=box.name, unfiled_box_link=unfiled_box_link)

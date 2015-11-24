@@ -66,6 +66,7 @@ def search():
             first_box = db(db.boxes.id == comic.boxes[0]).select()[0] #TODO
             results_html.append(construct_comic_preview(comic, first_box))
     
+    response.title = 'Search'
     return dict(search=search, results_html=results_html, search_complete=search_complete)
 
 
@@ -83,6 +84,7 @@ def user():
         for box in users_boxes:
             users_boxes_html.append(construct_box_preview(box))
         
+        response.title = user.display_name + '\'s Boxes'
         return dict(users_boxes_html=users_boxes_html, user=user)
     # Use custom handler for user/view_comics
     elif request.args(0) == 'view_comics':
@@ -102,8 +104,10 @@ def user():
                
             users_boxes_html.append((box, box_comics_html))
         
+        response.title = user.display_name + '\'s Comics'
         return dict(users_boxes_html=users_boxes_html, user=user)
     
+    response.title = auth.user.display_name if auth.user else 'User'
     return dict(login_form=auth())
 
 
