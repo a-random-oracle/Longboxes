@@ -246,3 +246,35 @@ def copy():
         pass
     
     return dict(form=form, comic_title=comic.title)
+
+
+@auth.requires_login()
+def move():
+    box_id = request.vars['box_id'] if request.vars['box_id'] != None else 1
+    comic_id = request.vars['id'] if request.vars['id'] != None else 1
+    comic = db(db.comics.id == comic_id).select()[0]
+    users_boxes = db(db.boxes.user_id == auth.user.id).select()
+    
+    box_options = []
+    for box in users_boxes:
+        if box.id not in comic.boxes:
+            box_options.append(OPTION(box.name, _value=box.id))
+        
+    form = FORM(DIV(LABEL('Select a box to move the comic to:'),
+                    SELECT(box_options, _name='selected_box', _class='form-control'),
+                _class='form-group'),
+                INPUT(_name='Move Comic', _type='submit', _value='Move Comic', _class='btn btn-default'),
+                _role='form')
+    
+    if form.accepts(request, session):
+        comic.boxes.remove(long(box_id))
+        comic.boxes.append(form.vars.selected_box)
+        comic.update_record(boxes=comic.boxes)
+        
+        redirect(URL('boxes', 'box', vars=dict(id=form.vars.selected_box)))
+    elif form.errors:
+        pass
+    else:
+        pass
+    
+    return dict(form=form, comic_title=comic.title)
