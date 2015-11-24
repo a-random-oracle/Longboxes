@@ -3,7 +3,16 @@
 	<div class="container-fluid">
 		<div class="box-collection">
 			<h2 class="text-center">All Boxes</h2>
-			<p class="text-center">{{=A('(Switch to Comic View)', _href=URL('main', 'user', args=['view_comics'], vars=dict(id=user.id)))}}</p>
+			<p class="text-center">
+				{{
+				if auth.user and user.id == auth.user.id:
+					=A('(Switch to Comic View)', _href=URL('main', 'user', args=['view_comics']))
+					pass
+				else:
+					=A('(Switch to Comic View)', _href=URL('main', 'user', args=['view_comics'], vars=dict(id=user.id)))
+					pass
+				}}
+			</p>
 			{{if len(users_boxes_html) > 0:}}
 			{{for box_html in users_boxes_html:}}
 			{{=DIV(box_html, _class='col-sm-4 col-md-2')}}
