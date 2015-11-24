@@ -74,7 +74,8 @@ def user():
     if request.args(0) == 'view_boxes':
         response.view = 'main/view_boxes.html'
         
-        user_id = request.vars['id'] if request.vars['id'] != None else 1
+        auth_user_id = auth.user.id if auth.user else 1
+        user_id = request.vars['id'] if request.vars['id'] != None else auth_user_id
         user = db(db.auth_user.id == user_id).select()[0]
         users_boxes = db(db.boxes.user_id == user_id).select(db.boxes.ALL, orderby=db.boxes.creation_date|~db.boxes.id)
         
@@ -87,7 +88,8 @@ def user():
     elif request.args(0) == 'view_comics':
         response.view = 'main/view_comics.html'
         
-        user_id = request.vars['id'] if request.vars['id'] != None else 1
+        auth_user_id = auth.user.id if auth.user else 1
+        user_id = request.vars['id'] if request.vars['id'] != None else auth_user_id
         user = db(db.auth_user.id == user_id).select()[0]
         users_boxes = db(db.boxes.user_id == user_id).select(db.boxes.ALL, orderby=db.boxes.creation_date|~db.boxes.id)
         
@@ -102,10 +104,7 @@ def user():
         
         return dict(users_boxes_html=users_boxes_html, user=user)
     
-    
-    login_form = auth()
-    
-    return dict(login_form=login_form)
+    return dict(login_form=auth())
 
 
 @cache.action()
