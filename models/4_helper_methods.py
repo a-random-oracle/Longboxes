@@ -26,15 +26,14 @@ def construct_box_preview(box):
                _class='box-preview')
 
 
-def construct_comic_preview(comic):
-    first_box = db(db.boxes.id == comic.boxes[0]).select()[0]
-    owner = db(db.auth_user.id == first_box.user_id).select()[0]
+def construct_comic_preview(comic, current_box):
+    owner = db(db.auth_user.id == current_box.user_id).select()[0]
     
     return DIV(A(IMG(_src=URL('main', 'download', args=comic.image),
                      _class='comic-thumbnail'),
-                 _href=URL('comics', 'comic', vars=dict(id=comic.id))),
+                 _href=URL('comics', 'comic', vars=dict(id=comic.id, box_id=current_box.id))),
                A(DIV(comic.title, _class='comic-title'),
-                 _href=URL('comics', 'comic', vars=dict(id=comic.id))),
+                 _href=URL('comics', 'comic', vars=dict(id=comic.id, box_id=current_box.id))),
                DIV('Issue No. ' + str(comic.issue_no),
                    _class='comic-issue-no'),
                DIV(A(owner.display_name,
@@ -55,6 +54,6 @@ def new_box_icon():
 def new_comic_icon(box):
     return DIV(A(IMG(_src=URL('static', 'images/add_comic.png'),
                      _class='comic-thumbnail'),
-                 _href=URL('comics', 'create', vars=dict(box=box.id))),
+                 _href=URL('comics', 'create', vars=dict(box_id=box.id))),
                DIV(_class='clear-floats'),
                _class='comic-preview')

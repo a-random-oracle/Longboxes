@@ -15,7 +15,7 @@ def box():
     
     comics_html = []
     for comic in comics:
-        comics_html.append(construct_comic_preview(comic))
+        comics_html.append(construct_comic_preview(comic, box))
     
     response.title = box.name
     return dict(box=box, owner=owner, comics_html=comics_html)
