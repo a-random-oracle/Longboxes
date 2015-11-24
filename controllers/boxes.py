@@ -91,7 +91,11 @@ def remove():
             box_contents = db(db.comics.boxes.contains(box.id)).select()
             
             for comic in box_contents:
-                comic.update_record(box_id=unfiled_box.id)
+                if len(comic.boxes) == 1:
+                    comic.update_record(boxes=[unfiled_box.id])
+                else:  
+                    comic.boxes.remove(long(box.id))
+                    comic.update_record(boxes=comic.boxes)
             
             db(db.boxes.id == box.id).delete()
         else:
