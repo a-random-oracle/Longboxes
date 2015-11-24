@@ -154,6 +154,9 @@ def remove():
     comic_id = request.vars['id'] if request.vars['id'] != None else 1
     comic = db(db.comics.id == comic_id).select()[0]
     
+    if len(comic.boxes) == 1:
+        redirect(URL('comics', 'remove_entirely', vars=dict(id=comic.id, box_id=box_id)))
+    
     remove_from_box = FORM(INPUT(_name='remove_from_box', _type='submit',
                                  _value='Remove Comic From This Box',
                                  _class='btn btn-default btn-block'),
@@ -165,7 +168,6 @@ def remove():
                            _role='form')
     
     if remove_from_box.process(formname='remove_from_box').accepted:
-        #raise Exception('box: ' + box_id + " | boxes: " + str(comic.boxes))
         comic.boxes.remove(long(box_id))
         comic.update_record(boxes=comic.boxes)
         
@@ -176,7 +178,7 @@ def remove():
         pass
     
     if remove_entirely.process(formname='remove_entirely').accepted:
-        redirect(URL('comics', 'remove_entirely', vars=dict(id=comic.id)))
+        redirect(URL('comics', 'remove_entirely', vars=dict(id=comic.id, box_id=box_id)))
     elif remove_entirely.errors:
         pass
     else:
@@ -186,22 +188,37 @@ def remove():
 
 
 def remove_entirely():
+    box_id = request.vars['box_id'] if request.vars['box_id'] != None else 1
     comic_id = request.vars['id'] if request.vars['id'] != None else 1
     comic = db(db.comics.id == comic_id).select()[0]
     
-    form = FORM.confirm('Delete This Comic', dict(Cancel=URL('main', 'user', args=['view_boxes'])))
-    form.element('input', _type='submit')['_class'] = 'btn btn-danger'
+    delete_comic = FORM(INPUT(_name='delete_comic', _type='submit',
+                              _value='Delete This Comic',
+                              _class='btn btn-danger btn-block'),
+                        _role='form')
     
-    if form.accepted:
+    cancel = FORM(INPUT(_name='cancel', _type='submit',
+                        _value='Cancel',
+                        _class='btn btn-default btn-block'),
+                  _role='form')
+    
+    if delete_comic.process(formname='delete_comic').accepted:
         db(db.comics.id == comic_id).delete()
         
         redirect(URL('main', 'user', args=['view_boxes']))
-    elif form.errors:
+    elif delete_comic.errors:
         pass
     else:
         pass
     
-    return dict(form=form, comic_title=comic.title)
+    if cancel.process(formname='cancel').accepted:
+        redirect(URL('boxes', 'box', vars=dict(id=box_id)))
+    elif cancel.errors:
+        pass
+    else:
+        pass
+    
+    return dict(delete_comic=delete_comic, cancel=cancel, comic_title=comic.title)
 
 
 @auth.requires_login()
