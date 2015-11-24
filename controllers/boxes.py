@@ -6,13 +6,14 @@ def index():
     redirect(URL('main', 'index'))
     return dict()
 
+
 def box():
     box_id = request.vars['id'] if request.vars['id'] != None else 1
     box = db(db.boxes.id == box_id).select()[0]
     user_id = db(db.auth_user.id == db.boxes.user_id
                  and db.boxes.id == box_id).select()[0].user_id
     owner = db(db.auth_user.id == user_id).select()[0]
-    comics = db(db.comics.box_id == box.id).select()
+    comics = db(db.comics.boxes.contains(box.id)).select()
     
     comics_html = []
     for comic in comics:
@@ -88,7 +89,7 @@ def remove():
     
     if form.accepted:
         if box.removable:
-            box_contents = db(db.comics.box_id == box_id).select()
+            box_contents = db(db.comics.boxes.contains(box.id)).select()
             
             for comic in box_contents:
                 comic.update_record(box_id=unfiled_box.id)

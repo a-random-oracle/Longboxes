@@ -6,12 +6,13 @@ def index():
     redirect(URL('main', 'index'))
     return dict()
 
+
 def comic():
     comic_id = request.vars['id'] if request.vars['id'] != None else 1
     comic = db(db.comics.id == comic_id).select()[0]
-    box = db(db.boxes.id == comic.box_id).select()[0]
+    first_box = db(db.boxes.id == comic.boxes[0]).select()[0]
     user_id = db(db.auth_user.id == db.boxes.user_id
-                 and db.boxes.id == comic.box_id).select()[0].user_id
+                 and db.boxes.id == first_box.id).select()[0].user_id
     owner = db(db.auth_user.id == user_id).select()[0]
     
     response.title = comic.title
@@ -157,7 +158,7 @@ def remove():
     if form.accepted:
         db(db.comics.id == comic_id).delete()
             
-        redirect(URL('boxes', 'box', vars=dict(id=comic.box_id)))
+        #redirect(URL('boxes', 'box', vars=dict(id=comic.box_id))) TODO
     elif form.errors:
         pass
     else:

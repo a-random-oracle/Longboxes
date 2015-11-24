@@ -9,7 +9,7 @@ def index():
     comic_counts = []
     
     for box in db().select(db.boxes.ALL):
-        comic_counts.append((box, db(db.comics.box_id == box.id).count()))
+        comic_counts.append((box, db(db.comics.boxes.contains(box.id)).count()))
     
     largest_boxes = sorted(comic_counts, key=operator.itemgetter(1), reverse=True)
     
@@ -69,18 +69,6 @@ def search():
     return dict(search=search, results_html=results_html)
 
 
-def comic():
-    comic_id = request.vars['id'] if request.vars['id'] != None else 1
-    comic = db(db.comics.id == comic_id).select()[0]
-    box = db(db.boxes.id == comic.box_id).select()[0]
-    user_id = db(db.auth_user.id == db.boxes.user_id
-                 and db.boxes.id == comic.box_id).select()[0].user_id
-    owner = db(db.auth_user.id == user_id).select()[0]
-    
-    response.title = comic.title
-    return dict(comic=comic, owner=owner)
-
-
 def user():
     # Use custom handler for user/profile
     if request.args(0) == 'view_boxes':
@@ -107,7 +95,7 @@ def user():
         for box in users_boxes:
             box_comics_html = []
             
-            for comic in db(db.comics.box_id == box.id).select():
+            for comic in db(db.comics.boxes.contains(box.id)).select():
                 box_comics_html.append(construct_comic_preview(comic))
                
             users_boxes_html.append((box, box_comics_html))
