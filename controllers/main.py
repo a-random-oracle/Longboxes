@@ -39,9 +39,6 @@ def index():
 
 
 def search():
-    DIV(INPUT(_name='box_name', _placeholder='Box name', _class='form-control'),
-                    _class='form-group'),
-    
     search = FORM(INPUT(_id='site-search', _name='search_term', _placeholder='Search by Name, Artist, Writer or Publisher', _class='form-control'),
                   INPUT(_name='Search', _type='submit', _value='Search', _class='btn btn-default'),
                   _class='form-inline')
@@ -70,7 +67,7 @@ def search():
 
 
 def user():
-    # Use custom handler for user/profile
+    # Use custom handler for user/view_boxes
     if request.args(0) == 'view_boxes':
         response.view = 'main/view_boxes.html'
         
@@ -83,7 +80,7 @@ def user():
             users_boxes_html.append(construct_box_preview(box))
         
         return dict(users_boxes_html=users_boxes_html, user=user)
-    # Use custom handler for user/profile
+    # Use custom handler for user/view_comics
     elif request.args(0) == 'view_comics':
         response.view = 'main/view_comics.html'
         

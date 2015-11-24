@@ -10,10 +10,8 @@ def index():
 def box():
     box_id = request.vars['id'] if request.vars['id'] != None else 1
     box = db(db.boxes.id == box_id).select()[0]
-    user_id = db(db.auth_user.id == db.boxes.user_id
-                 and db.boxes.id == box_id).select()[0].user_id
-    owner = db(db.auth_user.id == user_id).select()[0]
     comics = db(db.comics.boxes.contains(box.id)).select()
+    owner = db(db.auth_user.id == box.user_id).select()[0]
     
     comics_html = []
     for comic in comics:
@@ -80,6 +78,7 @@ def edit():
 def remove():
     box_id = request.vars['id'] if request.vars['id'] != None else 1
     box = db(db.boxes.id == box_id).select()[0]
+    
     unfiled_box = db(db.boxes.user_id == auth.user.id
                      and db.boxes.name == DEFAULT_BOX).select()[0]
     unfiled_box_link = URL('boxes', 'box', vars=dict(id=unfiled_box.id))
@@ -94,7 +93,7 @@ def remove():
             for comic in box_contents:
                 comic.update_record(box_id=unfiled_box.id)
             
-            db(db.boxes.id == box_id).delete()
+            db(db.boxes.id == box.id).delete()
         else:
             #TODO
             pass
