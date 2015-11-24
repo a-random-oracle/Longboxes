@@ -196,13 +196,11 @@ def remove_entirely():
     comic_id = request.vars['id'] if request.vars['id'] != None else 1
     comic = db(db.comics.id == comic_id).select()[0]
     
-    delete_comic = FORM(INPUT(_name='delete_comic', _type='submit',
-                              _value='Delete This Comic',
+    delete_comic = FORM(INPUT(_name='delete_comic', _type='submit', _value='Delete This Comic',
                               _class='btn btn-danger btn-block'),
                         _role='form')
     
-    cancel = FORM(INPUT(_name='cancel', _type='submit',
-                        _value='Cancel',
+    cancel = FORM(INPUT(_name='cancel', _type='submit', _value='Cancel',
                         _class='btn btn-default btn-block'),
                   _role='form')
     
@@ -239,20 +237,21 @@ def copy():
         if box.id not in comic.boxes:
             box_options.append(OPTION(box.name, _value=box.id))
         
-    form = FORM(DIV(LABEL('Select a box to copy the comic to:'),
-                    SELECT(box_options, _name='selected_box', _class='form-control'),
-                _class='form-group'),
-                INPUT(_name='Copy Comic', _type='submit', _value='Copy Comic', _class='btn btn-default'),
-                _role='form')
+    copy_comic = FORM(DIV(LABEL('Select a box to copy the comic to:'),
+                          SELECT(box_options, _name='selected_box', _class='form-control'),
+                          _class='form-group'),
+                      INPUT(_name='copy_comic', _type='submit', _value='Copy Comic',
+                            _class='btn btn-default'),
+                      _role='form')
     
-    if form.accepts(request, session):
+    if copy_comic.accepts(request, session):
         if auth.user.id == owner.id:
             # Copy the comic
-            comic.boxes.append(form.vars.selected_box)
+            comic.boxes.append(copy_comic.vars.selected_box)
             comic.update_record(boxes=comic.boxes)
         else:
             # Clone the comic
-            db.comics.insert(box_id=form.vars.selected_box,
+            db.comics.insert(box_id=copy_comic.vars.selected_box,
                              title=comic.title,
                              issue_no=comic.issue_no,
                              writers=comic.writers,
@@ -261,14 +260,14 @@ def copy():
                              description=comic.description,
                              image=comic.image)
         
-        redirect(URL('boxes', 'box', vars=dict(id=form.vars.selected_box)))
-    elif form.errors:
+        redirect(URL('boxes', 'box', vars=dict(id=copy_comic.vars.selected_box)))
+    elif copy_comic.errors:
         pass
     else:
         pass
     
     response.title = 'Comic Copying'
-    return dict(form=form, comic_title=comic.title)
+    return dict(copy_comic=copy_comic, comic_title=comic.title)
 
 
 @auth.requires_login()
@@ -283,22 +282,22 @@ def move():
         if box.id not in comic.boxes:
             box_options.append(OPTION(box.name, _value=box.id))
         
-    form = FORM(DIV(LABEL('Select a box to move the comic to:'),
-                    SELECT(box_options, _name='selected_box', _class='form-control'),
-                _class='form-group'),
-                INPUT(_name='Move Comic', _type='submit', _value='Move Comic', _class='btn btn-default'),
-                _role='form')
+    move_comic = FORM(DIV(LABEL('Select a box to move the comic to:'),
+                          SELECT(box_options, _name='selected_box', _class='form-control'),
+                          _class='form-group'),
+                      INPUT(_name='move_comic', _type='submit', _value='Move Comic', _class='btn btn-default'),
+                      _role='form')
     
-    if form.accepts(request, session):
+    if move_comic.accepts(request, session):
         comic.boxes.remove(long(box_id))
-        comic.boxes.append(form.vars.selected_box)
+        comic.boxes.append(move_comic.vars.selected_box)
         comic.update_record(boxes=comic.boxes)
         
-        redirect(URL('boxes', 'box', vars=dict(id=form.vars.selected_box)))
-    elif form.errors:
+        redirect(URL('boxes', 'box', vars=dict(id=move_comic.vars.selected_box)))
+    elif move_comic.errors:
         pass
     else:
         pass
     
     response.title = 'Comic Moving'
-    return dict(form=form, comic_title=comic.title)
+    return dict(move_comic=move_comic, comic_title=comic.title)

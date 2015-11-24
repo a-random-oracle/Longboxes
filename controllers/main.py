@@ -108,7 +108,7 @@ def user():
         return dict(users_boxes_html=users_boxes_html, user=user)
     
     response.title = auth.user.display_name if auth.user else 'User'
-    return dict(login_form=auth())
+    return dict(login=auth())
 
 
 @cache.action()
