@@ -53,10 +53,12 @@ def search():
             match_artist = db(db.comics.artists.like(query_term)).select()
             match_publisher = db(db.comics.publisher.like(query_term)).select()
             results = match_title | match_writer | match_artist | match_publisher
+        
+        search_complete = True
     elif search.errors:
-        pass
+        search_complete = False
     else:
-        pass
+        search_complete = False
     
     results_html = []
     if len(results) > 0:
@@ -64,7 +66,7 @@ def search():
             first_box = db(db.boxes.id == comic.boxes[0]).select()[0] #TODO
             results_html.append(construct_comic_preview(comic, first_box))
     
-    return dict(search=search, results_html=results_html)
+    return dict(search=search, results_html=results_html, search_complete=search_complete)
 
 
 def user():

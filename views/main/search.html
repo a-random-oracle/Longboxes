@@ -15,7 +15,7 @@
 		{{for comic_html in results_html:}}
 		{{=DIV(comic_html, _class='col-sm-6 col-md-4')}}
 		{{pass}}
-		{{else:}}
+		{{elif search_complete:}}
 		{{=DIV('No results', _class='col-md-12')}}
 		{{pass}}
 	</div>
