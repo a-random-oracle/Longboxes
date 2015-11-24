@@ -61,7 +61,8 @@ def search():
     results_html = []
     if len(results) > 0:
         for comic in results:
-            results_html.append(construct_comic_preview(comic))
+            first_box = db(db.boxes.id == comic.boxes[0]).select()[0] #TODO
+            results_html.append(construct_comic_preview(comic, first_box))
     
     return dict(search=search, results_html=results_html)
 
@@ -93,7 +94,7 @@ def user():
             box_comics_html = []
             
             for comic in db(db.comics.boxes.contains(box.id)).select():
-                box_comics_html.append(construct_comic_preview(comic))
+                box_comics_html.append(construct_comic_preview(comic, box))
                
             users_boxes_html.append((box, box_comics_html))
         
