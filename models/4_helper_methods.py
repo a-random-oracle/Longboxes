@@ -12,11 +12,20 @@ def construct_box_preview(box):
         box_image = IMG(_src=URL('main', 'download', args=comics[0].image),
                         _class='box-thumbnail')
     
+    if auth.user and auth.user.id == owner.id:
+        if box.visible:
+            visibility = ' (Public)'
+        else:
+            visibility = ' (Private)'
+    else:
+        visibility = ''
+    
     return DIV(A(box_image,
                  _href=URL('boxes', 'box', vars=dict(id=box.id))),
-               A(DIV(box.name,
-                     _class='box-name'),
-                 _href=URL('boxes', 'box', vars=dict(id=box.id))),
+               DIV(A(box.name,
+                     _href=URL('boxes', 'box', vars=dict(id=box.id))),
+                   visibility,
+                   _class='box-name'),
                DIV(str(len(comics)) + ' comics',
                    _class='box-comic-count'),
                DIV(A(owner.display_name,

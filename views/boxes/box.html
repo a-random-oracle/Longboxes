@@ -7,11 +7,13 @@
 			if auth.user and auth.user.id == owner.id:
 				=A(SPAN(_class='glyphicon glyphicon-pencil'), _href=URL('boxes', 'edit', vars=dict(id=box.id)))
 				=A(SPAN(_class='glyphicon glyphicon-trash'), _href=URL('boxes', 'remove', vars=dict(id=box.id)))
-			pass
+				pass
 			}}
 		</h2>
+		<p class="text-center">{{='Public' if box.visible else 'Private'}}</p>
 		<p class="text-center">Created on {{=box.creation_date}}</p>
 		<p class="text-center">{{=A(owner.display_name, _href=URL('main', 'user', args=['view_boxes'], vars=dict(id=owner.id)))}}</p>
+		
 		{{if len(comics_html) > 0:}}
 		{{for comic_html in comics_html:}}
 		{{=DIV(comic_html, _class='col-sm-6 col-md-4')}}
