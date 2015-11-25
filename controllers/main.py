@@ -107,7 +107,7 @@ def user():
         response.title = user.display_name + '\'s Comics'
         return dict(users_boxes_html=users_boxes_html, user=user)
     
-    response.title = auth.user.display_name if auth.user else 'User'
+    response.title = 'Sign In'
     return dict(login=auth())
 
 
