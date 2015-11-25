@@ -8,7 +8,7 @@ def index():
     # Get the five largest boxes
     comic_counts = []
     
-    for box in db().select(db.boxes.ALL):
+    for box in get_visible_boxes(public_only=True):
         comic_counts.append((box, db(db.comics.boxes.contains(box.id)).count()))
     
     largest_boxes = sorted(comic_counts, key=operator.itemgetter(1), reverse=True)
@@ -24,7 +24,7 @@ def index():
     
     
     # Get the five newest boxes
-    newest_boxes = db().select(db.boxes.ALL, orderby=~db.boxes.creation_date|~db.boxes.id)
+    newest_boxes = get_visible_boxes(public_only=True, order=~db.boxes.creation_date|~db.boxes.id)
     
     if len(newest_boxes) >= NUM_NEWEST_BOXES_TO_DISPLAY:
         newest_boxes = newest_boxes[:NUM_NEWEST_BOXES_TO_DISPLAY]
@@ -53,6 +53,12 @@ def search():
             match_artist = db(db.comics.artists.like(query_term)).select()
             match_publisher = db(db.comics.publisher.like(query_term)).select()
             results = match_title | match_writer | match_artist | match_publisher
+            
+            public_results = []
+            for result in results:
+                visible, box = is_comic_visible(result)
+                if visible:
+                    public_results.append((result, box))
         
         search_complete = True
     elif search.errors:
@@ -62,9 +68,8 @@ def search():
     
     results_html = []
     if len(results) > 0:
-        for comic in results:
-            first_box = db(db.boxes.id == comic.boxes[0]).select()[0] #TODO
-            results_html.append(construct_comic_preview(comic, first_box))
+        for comic, box in public_results:
+            results_html.append(construct_comic_preview(comic, box))
     
     response.title = 'Search'
     return dict(search=search, results_html=results_html, search_complete=search_complete)

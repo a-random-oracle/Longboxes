@@ -13,6 +13,10 @@ def box():
     comics = db(db.comics.boxes.contains(box.id)).select()
     owner = db(db.auth_user.id == box.user_id).select()[0]
     
+    # Check that the box is visible
+    if not is_box_visible(box):
+        raise HTTP(404)
+    
     comics_html = []
     for comic in comics:
         comics_html.append(construct_comic_preview(comic, box))
@@ -52,6 +56,10 @@ def edit():
     box_id = request.vars['id'] if request.vars['id'] != None else 1
     box = db(db.boxes.id == box_id).select()[0]
     
+    # Check that the box is visible
+    if not is_box_visible(box):
+        raise HTTP(404)
+    
     edit_box = FORM(DIV(INPUT(_name='box_name', value=box.name, _class='form-control'),
                         _class='form-group'),
                     DIV(LABEL(INPUT(_name='visibility', _type='checkbox', value=box.visible),
@@ -79,6 +87,10 @@ def edit():
 def remove():
     box_id = request.vars['id'] if request.vars['id'] != None else 1
     box = db(db.boxes.id == box_id).select()[0]
+    
+    # Check that the box is visible to the user
+    if not is_box_visible(box):
+        raise HTTP(404)
     
     unfiled_box = db(db.boxes.user_id == auth.user.id
                      and db.boxes.name == DEFAULT_BOX).select()[0]

@@ -57,3 +57,43 @@ def new_comic_icon(box):
                  _href=URL('comics', 'create', vars=dict(box_id=box.id))),
                DIV(_class='clear-floats'),
                _class='comic-preview')
+
+
+def get_visible_boxes(public_only=False, order=None):
+    # Public boxes are always visible to everyone, so fetch them first
+    if order:
+        public_boxes = db(db.boxes.visible == True).select(db.boxes.ALL, orderby=order)
+    else:
+        public_boxes = db(db.boxes.visible == True).select(db.boxes.ALL)
+    
+    if public_only:
+        visible_boxes = public_boxes
+    else:
+        # If a user is signed in, also show their private boxes
+        if auth.user:
+            if order:
+                users_boxes = db(db.auth_user.id == auth.user.id).select(db.boxes.ALL, orderby=order)
+            else:
+                users_boxes = db(db.auth_user.id == auth.user.id).select(db.boxes.ALL)
+            
+            visible_boxes = public_boxes | users_boxes
+    
+    return visible_boxes
+
+
+def is_box_visible(box):
+    return box.visible or (auth.user and (auth.user.id == box.user_id))
+
+
+def is_comic_visible(comic):
+    # A comic is visible if:
+    # - it is in a box owned by the current user, or
+    # - it is in at least one public box
+    
+    boxes = db(db.boxes.id.belongs(comic.boxes)).select()
+    
+    for box in boxes:
+        if is_box_visible(box):
+            return (True, box)
+    
+    return (False, None)
