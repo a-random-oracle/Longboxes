@@ -44,9 +44,10 @@ def construct_comic_preview(comic, current_box):
 
 
 def construct_user_preview(user):
-    box_count = db(db.boxes.user_id == user.id).count()
+    box_count = db((db.boxes.user_id == user.id)
+                   & (db.boxes.visible == True)).count()
     box_term = 'boxes' if box_count > 1 else 'box'
-    box_text = str(box_count) + ' ' + box_term if box_count > 0 else ''
+    box_text = str(box_count) + ' ' + box_term if box_count > 0 else 'No boxes'
     
     return DIV(A(DIV(user.display_name, _class='user-display-name'),
                  _href=URL('main', 'user', args=['view_boxes'], vars=dict(id=user.id))),

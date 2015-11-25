@@ -120,7 +120,8 @@ def user():
         
         users_boxes_html = []
         for box in users_boxes:
-            users_boxes_html.append(construct_box_preview(box))
+            if is_box_visible(box):
+                users_boxes_html.append(construct_box_preview(box))
         
         response.title = user.display_name + '\'s Boxes'
         return dict(users_boxes_html=users_boxes_html, user=user)
@@ -135,12 +136,13 @@ def user():
         
         users_boxes_html = []
         for box in users_boxes:
-            box_comics_html = []
-            
-            for comic in db(db.comics.boxes.contains(box.id)).select():
-                box_comics_html.append(construct_comic_preview(comic, box))
-               
-            users_boxes_html.append((box, box_comics_html))
+            if is_box_visible(box):
+                box_comics_html = []
+                
+                for comic in db(db.comics.boxes.contains(box.id)).select():
+                    box_comics_html.append(construct_comic_preview(comic, box))
+                   
+                users_boxes_html.append((box, box_comics_html))
         
         response.title = user.display_name + '\'s Comics'
         return dict(users_boxes_html=users_boxes_html, user=user)
