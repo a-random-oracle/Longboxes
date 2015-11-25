@@ -20,7 +20,7 @@ def construct_box_preview(box):
                DIV(str(len(comics)) + ' comics',
                    _class='box-comic-count'),
                DIV(A(owner.display_name,
-                     _href=URL('user', args=['view_boxes'], vars=dict(id=owner.id))),
+                     _href=URL('main', 'user', args=['view_boxes'], vars=dict(id=owner.id))),
                    _class='box-owner'),
                DIV(_class='clear-floats'),
                _class='box-preview')
@@ -37,10 +37,23 @@ def construct_comic_preview(comic, current_box):
                DIV('Issue No. ' + str(comic.issue_no),
                    _class='comic-issue-no'),
                DIV(A(owner.display_name,
-                     _href=URL('user', args=['view_boxes'], vars=dict(id=owner.id))),
+                     _href=URL('main', 'user', args=['view_boxes'], vars=dict(id=owner.id))),
                    _class='comic-owner'),
                DIV(_class='clear-floats'),
                _class='comic-preview')
+
+
+def construct_user_preview(user):
+    box_count = db(db.boxes.user_id == user.id).count()
+    box_term = 'boxes' if box_count > 1 else 'box'
+    box_text = str(box_count) + ' ' + box_term if box_count > 0 else ''
+    
+    return DIV(A(DIV(user.display_name, _class='user-display-name'),
+                 _href=URL('main', 'user', args=['view_boxes'], vars=dict(id=user.id))),
+               DIV(box_text,
+                   _class='user-boxes'),
+               DIV(_class='clear-floats'),
+               _class='user-preview')
 
 
 def new_box_icon():

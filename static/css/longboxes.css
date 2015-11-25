@@ -56,10 +56,17 @@ img.box-thumbnail {
 	height: auto;
 }
 
+div.user-preview {
+	margin-top: 2%;
+	margin-bottom: 2%;
+	/*border-style: solid;
+	border-width: thin;*/
+}
+
 div.clear-floats {
 	clear: both;
 }
 
-#site-search {
+#site-search, #user-filter {
 	width: 80%
 }

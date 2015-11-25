@@ -40,7 +40,7 @@ def index():
 
 def search():
     search = FORM(INPUT(_id='site-search', _name='search_term', _placeholder='Search by Name, Artist, Writer or Publisher', _class='form-control'),
-                  INPUT(_name='Search', _type='submit', _value='Search', _class='btn btn-default'),
+                  INPUT(_name='search', _type='submit', _value='Search', _class='btn btn-default'),
                   _class='form-inline')
     
     results = []
@@ -73,6 +73,39 @@ def search():
     
     response.title = 'Search'
     return dict(search=search, results_html=results_html, search_complete=search_complete)
+
+
+def search_users():
+    filter = FORM(INPUT(_id='user-filter', _name='filter_term', _placeholder='Filter users by name', _class='form-control'),
+                  INPUT(_name='apply_filter', _type='submit', _value='Apply Filter', _class='btn btn-default'),
+                  _class='form-inline')
+    
+    results = db().select(db.auth_user.ALL)
+    
+    if filter.accepts(request, session):
+        if filter.vars.filter_term != None:
+            # As virtual fields (i.e. auth_user.display_name) run at the application level
+            # rather than the database level, they cannot be used in database queries
+            # Consequently this search must be done manually
+            
+            filtered_results = []
+            for result in results:
+                if filter.vars.filter_term in result.display_name:
+                    filtered_results.append(result)
+            
+            results = filtered_results
+    elif filter.errors:
+        pass
+    else:
+        pass
+    
+    results_html = []
+    if len(results) > 0:
+        for user in results:
+            results_html.append(construct_user_preview(user))
+    
+    response.title = 'Search'
+    return dict(filter=filter, results_html=results_html)
 
 
 def user():

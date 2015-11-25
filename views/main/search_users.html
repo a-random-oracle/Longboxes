@@ -1,12 +1,12 @@
 {{extend 'longboxes.html'}}
 	
 	<div class="container-fluid">
-		<h2 class="text-center">Search</h2>
+		<h2 class="text-center">Search Users</h2>
 
 		<div class="col-md-2"></div>
 
 		<div class="col-md-8">
-			{{=search}}
+			{{=filter}}
 		</div>
 		
 		<div class="col-md-2"></div>
@@ -16,10 +16,8 @@
 		<div class="col-md-12">
 			{{if len(results_html) > 0:}}
 			{{for comic_html in results_html:}}
-			{{=DIV(comic_html, _class='col-sm-6 col-md-4')}}
+			{{=DIV(comic_html, _class='col-sm-3 col-md-2')}}
 			{{pass}}
-			{{elif search_complete:}}
-			{{=DIV('No results', _class='col-md-12')}}
 			{{pass}}
 		</div>
 	</div>
