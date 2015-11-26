@@ -12,14 +12,18 @@
 		<div class="col-md-2"></div>
 		
 		<div class="col-xs-12" style="margin-bottom: 20px;"></div>
+		
+		<div class="col-md-1"></div>
 
-		<div class="col-md-12">
+		<div class="col-md-10">
 			{{if len(results_html) > 0:}}
 			{{for comic_html in results_html:}}
 			{{=DIV(comic_html, _class='col-sm-3 col-md-2')}}
 			{{pass}}
 			{{pass}}
 		</div>
+		
+		<div class="col-md-1"></div>
 	</div>
 	
 	{{block page_js}}
