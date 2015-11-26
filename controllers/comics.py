@@ -99,40 +99,32 @@ def edit():
                           _class='w2p_fw'),
                       DIV(INPUT(_name='comic_publisher', _value=comic.publisher, _class='form-control'),
                           _class='form-group'),
-                      DIV(TEXTAREA(_name='comic_description', _value=comic.description, _class='form-control'),
+                      DIV(TEXTAREA(_name='comic_description', value=comic.description, _class='form-control'),
                           _class='form-group'),
                       DIV(IMG(_id='comic-image-preview', _src='', _hidden=True),
                           INPUT(_id='comic-image-selector', _name='comic_image', _type='file', _class='upload',
-                                requires=IS_IMAGE(extensions=('png', 'jpg'), maxsize=(300, 400))),
+                                requires=IS_EMPTY_OR(IS_IMAGE(extensions=('png', 'jpeg'), maxsize=(300, 400)))),
                           _class='form-group'),
                       INPUT(_name='Confirm', _type='submit', _value='Confirm', _class='btn btn-default'),
                       _role='form')
     
-    # Errors are handled manually here to work around the image error issue (more details below)
-    if edit_comic.accepts(request, session, hideerror=True):
+    if edit_comic.accepts(request, session):
+        if edit_comic.vars.comic_image != None and edit_comic.vars.comic_image != '':
+            new_image = edit_comic.vars.comic_image
+        else:
+            new_image = comic.image
+        
         comic.update_record(title=edit_comic.vars.comic_title,
                             issue_no=edit_comic.vars.comic_issue_no,
                             writers=edit_comic.vars.comic_writers,
                             artists=edit_comic.vars.comic_artists,
                             publisher=edit_comic.vars.comic_publisher,
                             description=edit_comic.vars.comic_description,
-                            image=edit_comic.vars.comic_image)
+                            image=new_image)
         
         redirect(URL('comics', 'comic', vars=dict(id=comic.id, box_id=box_id)))
     elif edit_comic.errors:
-        # If the only error is the image field, and occurs because no image has
-        # been supplied, ignore the error
-        if (len(edit_comic.errors) == 1
-            and 'comic_image' in edit_comic.errors
-            and edit_comic.vars.comic_image == ''):
-            comic.update_record(title=edit_comic.vars.comic_title,
-                            issue_no=edit_comic.vars.comic_issue_no,
-                            writers=edit_comic.vars.comic_writers,
-                            artists=edit_comic.vars.comic_artists,
-                            publisher=edit_comic.vars.comic_publisher,
-                            description=edit_comic.vars.comic_description)
-        
-            redirect(URL('comics', 'comic', vars=dict(id=comic.id, box_id=box_id)))
+        pass
     else:
         pass
     
