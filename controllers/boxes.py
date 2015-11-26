@@ -27,7 +27,7 @@ def box():
 
 @auth.requires_login()
 def create():
-    new_box = FORM(DIV(INPUT(_name='box_name', _placeholder='Box name', _class='form-control'),
+    new_box = FORM(DIV(INPUT(_id='first-field', _name='box_name', _placeholder='Box name', _class='form-control'),
                        _class='form-group'),
                    DIV(LABEL(INPUT(_name='visibility', _type='checkbox'),
                              'Allow others to view this box'),
@@ -60,7 +60,7 @@ def edit():
     if not is_box_visible(box):
         raise HTTP(404)
     
-    edit_box = FORM(DIV(INPUT(_name='box_name', value=box.name, _class='form-control'),
+    edit_box = FORM(DIV(INPUT(_id='first-field', _name='box_name', value=box.name, _class='form-control'),
                         _class='form-group'),
                     DIV(LABEL(INPUT(_name='visibility', _type='checkbox', value=box.visible),
                               'Allow others to view this box'),

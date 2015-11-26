@@ -9,9 +9,12 @@
 	
 	{{block page_js}}
 	<script src="{{=URL('static', 'js/image-preview.js')}}" type="text/javascript"></script>
+	
 	<script>
 	$("#comic-image-selector").change(function() {
 		load_image_preview(this, '#comic-image-preview');
 	});
 	</script>
+	
+	<script src="{{=URL('static', 'js/form-focus.js')}}" type="text/javascript"></script>
 	{{end page_js}}

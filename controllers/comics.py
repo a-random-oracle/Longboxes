@@ -22,7 +22,7 @@ def comic():
 def create():
     box_id = request.vars['box_id'] if request.vars['box_id'] != None else 1
     
-    form = FORM(DIV(INPUT(_name='comic_title', _placeholder='Comic title', _class='form-control'),
+    form = FORM(DIV(INPUT(_id='first-field', _name='comic_title', _placeholder='Comic title', _class='form-control'),
                     _class='form-group'),
                 DIV(INPUT(_name='comic_issue_no', _placeholder='Issue no.', _class='form-control'),
                     _class='form-group'),
@@ -85,7 +85,7 @@ def edit():
         for artist in comic.artists:
             artists += LI(INPUT(_name='comic_artists', _value=artist, _class='form-control'))
     
-    edit_comic = FORM(DIV(INPUT(_name='comic_title', _value=comic.title, _class='form-control'),
+    edit_comic = FORM(DIV(INPUT(_id='first-field', _name='comic_title', _value=comic.title, _class='form-control'),
                           _class='form-group'),
                       DIV(INPUT(_name='comic_issue_no', _value=comic.issue_no, _class='form-control'),
                           _class='form-group'),
@@ -227,7 +227,7 @@ def copy():
             box_options.append(OPTION(box.name, _value=box.id))
         
     copy_comic = FORM(DIV(LABEL('Select a box to copy the comic to:'),
-                          SELECT(box_options, _name='selected_box', _class='form-control'),
+                          SELECT(box_options, _id='first-field', _name='selected_box', _class='form-control'),
                           _class='form-group'),
                       INPUT(_name='copy_comic', _type='submit', _value='Copy Comic',
                             _class='btn btn-default'),
@@ -272,7 +272,7 @@ def move():
             box_options.append(OPTION(box.name, _value=box.id))
         
     move_comic = FORM(DIV(LABEL('Select a box to move the comic to:'),
-                          SELECT(box_options, _name='selected_box', _class='form-control'),
+                          SELECT(box_options, _id='first-field', _name='selected_box', _class='form-control'),
                           _class='form-group'),
                       INPUT(_name='move_comic', _type='submit', _value='Move Comic', _class='btn btn-default'),
                       _role='form')
