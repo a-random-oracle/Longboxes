@@ -10,7 +10,11 @@
 				pass
 			}}
 		</h2>
-		<p class="text-center">{{='Public' if box.visible else 'Private'}}</p>
+		<p class="text-center">
+			{{if auth.user and auth.user.id == box.user_id:}}
+			{{='Public' if box.visible else 'Private'}}
+			{{pass}}
+		</p>
 		<p class="text-center">Created on {{=box.creation_date}}</p>
 		<p class="text-center">{{=A(owner.display_name, _href=URL('main', 'user', args=['view_boxes'], vars=dict(id=owner.id)))}}</p>
 		
