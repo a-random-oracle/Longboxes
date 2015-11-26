@@ -2,8 +2,6 @@
 
 # Helper methods
 def sign_in_and_out():
-    #_href=URL('main', 'user', args=['view_boxes'])
-    
     if auth.is_logged_in():
         return LI(A(get_display_name(auth.user), SPAN(_class='caret'), _class='dropdown-toggle', _href='#', _role='button',
                     **{'_data-toggle': 'dropdown', '_aria-haspopup': 'true', '_aria-expanded': 'false'}),
@@ -19,7 +17,7 @@ def sign_in_and_out():
 
 def construct_box_preview(box):
     owner = db(db.auth_user.id == box.user_id).select()[0]
-    comics = db(db.comics.boxes.contains(box.id)).select(db.comics.ALL, orderby=~db.comics.id)
+    comics = db(db.comics.boxes.contains(box.id)).select()
     
     if (len(comics) == 0):
         box_image = IMG(_src=URL('static', 'images/default_box.png'),
