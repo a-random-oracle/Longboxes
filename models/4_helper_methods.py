@@ -7,11 +7,11 @@ def sign_in_and_out():
     if auth.is_logged_in():
         return LI(A(get_display_name(auth.user), SPAN(_class='caret'), _class='dropdown-toggle', _href='#', _role='button',
                     **{'_data-toggle': 'dropdown', '_aria-haspopup': 'true', '_aria-expanded': 'false'}),
-                  DIV(UL(LI(A(T('View Boxes'), _href=URL('main', 'user', args=['view_boxes']))),
-                         LI(A(T('View Comics'), _href=URL('main', 'user', args=['view_comics']))),
-                         LI(_class='divider', _role='separator'),
-                         LI(A(T('Sign Out'), _href=URL('main', 'user', args=['logout'], vars=dict(_next=URL('main', 'index')))))),
-                         _class='dropdown-menu'),
+                  UL(LI(A(T('View Boxes'), _href=URL('main', 'user', args=['view_boxes']))),
+                     LI(A(T('View Comics'), _href=URL('main', 'user', args=['view_comics']))),
+                     LI(_class='divider', _role='separator'),
+                     LI(A(T('Sign Out'), _href=URL('main', 'user', args=['logout'], vars=dict(_next=URL('main', 'index'))))),
+                     _class='dropdown-menu'),
                   _class='dropdown')
     else:
         return LI(A(T('Sign In'), _href=URL('main', 'user', args=['login'], vars=dict(_next=URL('main', 'user', args=['view_boxes'])))))
