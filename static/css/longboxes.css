@@ -21,8 +21,8 @@ img.comic-thumbnail {
 	display: block;
 	max-width: 150px;
 	max-height: 200px;
-	width: 100%;
-	height: auto;
+	width: auto;
+	height: 100%;
 }
 
 div.comic-title {
@@ -52,8 +52,8 @@ img.box-thumbnail {
 	display: block;
 	max-width: 150px;
 	max-height: 200px;
-	width: 100%;
-	height: auto;
+	width: auto;
+	height: 100%;
 }
 
 div.user-preview {
