@@ -18,7 +18,6 @@ db.define_table('boxes',
  
 ## Comics
 db.define_table('comics',
-    Field('boxes', type='list:reference boxes'),
     Field('title', type='string'),
     Field('issue_no', type='integer'),
     Field('writers', type='list:string'),
