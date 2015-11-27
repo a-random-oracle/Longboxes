@@ -9,7 +9,7 @@ def index():
     comic_counts = []
     
     for box in get_visible_boxes(public_only=True):
-        comic_counts.append((box, db(db.comics.boxes.contains(box.id)).count()))
+        comic_counts.append((box, len(get_comics(box))))
     
     largest_boxes = sorted(comic_counts, key=operator.itemgetter(1), reverse=True)
     
@@ -139,7 +139,7 @@ def user():
             if is_box_visible(box):
                 box_comics_html = []
                 
-                for comic in db(db.comics.boxes.contains(box.id)).select():
+                for comic in get_comics(box):
                     box_comics_html.append(construct_comic_preview(comic, box))
                    
                 users_boxes_html.append((box, box_comics_html))

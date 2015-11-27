@@ -17,7 +17,7 @@ def sign_in_and_out():
 
 def construct_box_preview(box):
     owner = db(db.auth_user.id == box.user_id).select()[0]
-    comics = db(db.comics.boxes.contains(box.id)).select()
+    comics = get_comics(box)
     
     if (len(comics) == 0):
         box_image = IMG(_src=URL('static', 'images/default_box.png'),
@@ -96,6 +96,16 @@ def new_comic_icon(box):
                _class='comic-preview')
 
 
+def get_comics(box):
+    return db((db.comics.id == db.comic_box_map.comic_id)
+              & (db.comic_box_map.box_id == box.id)).select(db.comics.ALL)
+
+
+def get_boxes(comic):
+    return db((db.boxes.id == db.comic_box_map.box_id)
+              & (db.comic_box_map.comic_id == comic.id)).select(db.boxes.ALL)
+
+
 def get_visible_boxes(public_only=False, order=None):
     # Public boxes are always visible to everyone, so fetch them first
     if order:
@@ -127,7 +137,7 @@ def is_comic_visible(comic):
     # - it is in a box owned by the current user, or
     # - it is in at least one public box
     
-    boxes = db(db.boxes.id.belongs(comic.boxes)).select()
+    boxes = get_boxes(comic)
     
     for box in boxes:
         if is_box_visible(box):

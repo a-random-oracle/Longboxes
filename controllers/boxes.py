@@ -10,7 +10,7 @@ def index():
 def box():
     box_id = request.vars['id'] if request.vars['id'] != None else 1
     box = db(db.boxes.id == box_id).select()[0]
-    comics = db(db.comics.boxes.contains(box.id)).select()
+    comics = get_comics(box)
     owner = db(db.auth_user.id == box.user_id).select()[0]
     
     # Check that the box is visible
@@ -106,17 +106,19 @@ def remove():
     
     if delete_box.process(formname='delete_box').accepted:
         if box.removable:
-            box_contents = db(db.comics.boxes.contains(box.id)).select()
+            box_contents = get_comics(box)
             
             # Move comics out to other boxes
             # If a comic is in another box already, just remove it from this box
             # If a comic is in no other boxes, move it to the unfiled box
             for comic in box_contents:
-                if len(comic.boxes) == 1:
+                comic_boxes = get_boxes(comic)
+                
+                if len(comic_boxes) == 1:
                     comic.update_record(boxes=[unfiled_box.id])
                 else:  
-                    comic.boxes.remove(long(box.id))
-                    comic.update_record(boxes=comic.boxes)
+                    comic_boxes.remove(long(box.id))
+                    comic.update_record(boxes=comic_boxes)
             
             db(db.boxes.id == box.id).delete()
         else:
