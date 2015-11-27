@@ -27,3 +27,9 @@ db.define_table('comics',
     Field('description', type='string'),
     Field('image', type='upload')
 )
+
+## Comic-Box Map
+db.define_table('comic_box_map',
+    Field('comic_id', type='reference comics'),
+    Field('box_id', type='reference boxes'),
+)
