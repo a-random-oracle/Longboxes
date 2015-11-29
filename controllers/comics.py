@@ -11,11 +11,11 @@ def comic():
     box_id = request.vars['box_id'] if request.vars['box_id'] != None else 1
     comic_id = request.vars['id'] if request.vars['id'] != None else 1
     comic = db(db.comics.id == comic_id).select()[0]
-    first_box = db(db.boxes.id == get_boxes(comic)[0]).select()[0]
-    owner = db(db.auth_user.id == first_box.user_id).select()[0]
+    box = db(db.boxes.id == box_id).select()[0]
+    owner = db(db.auth_user.id == box.user_id).select()[0]
     
     response.title = comic.title
-    return dict(comic=comic, owner=owner, box_id=box_id)
+    return dict(comic=comic, owner=owner, box_id=box.id)
 
 
 @auth.requires_login()
@@ -137,6 +137,7 @@ def remove():
     box_id = request.vars['box_id'] if request.vars['box_id'] != None else 1
     comic_id = request.vars['id'] if request.vars['id'] != None else 1
     comic = db(db.comics.id == comic_id).select()[0]
+    box = db(db.boxes.id == box_id).select()[0]
     comic_boxes = get_boxes(comic)
     
     if len(comic_boxes) == 1:
@@ -153,8 +154,8 @@ def remove():
                            _role='form')
     
     if remove_from_box.process(formname='remove_from_box').accepted:
-        comic_boxes.remove(long(box_id))
-        comic.update_record(boxes=comic_boxes)
+        db((db.comic_box_map.box_id == box.id)
+           & (db.comic_box_map.comic_id == comic.id)).delete()
         
         redirect(URL('main', 'user', args=['view_boxes']))
     elif remove_from_box.errors:
@@ -210,14 +211,14 @@ def remove_entirely():
 def copy():
     comic_id = request.vars['id'] if request.vars['id'] != None else 1
     comic = db(db.comics.id == comic_id).select()[0]
-    comic_boxes = get_boxes(comic)
-    first_box = db(db.boxes.id == comic_boxes[0]).select()[0]
+    comic_boxes_ids = [box.id for box in get_boxes(comic, db.boxes.id)]
+    first_box = db(db.boxes.id == comic_boxes_ids[0]).select()[0]
     owner = db(db.auth_user.id == first_box.user_id).select()[0]
     users_boxes = db(db.boxes.user_id == auth.user.id).select()
     
     box_options = []
     for box in users_boxes:
-        if box.id not in comic_boxes:
+        if box.id not in comic_boxes_ids:
             box_options.append(OPTION(box.name, _value=box.id))
         
     copy_comic = FORM(DIV(LABEL('Select a box to copy the comic to:'),
@@ -230,18 +231,19 @@ def copy():
     if copy_comic.accepts(request, session):
         if auth.user.id == owner.id:
             # Copy the comic
-            comic_boxes.append(copy_comic.vars.selected_box)
-            comic.update_record(boxes=comic_boxes)
+            db.comic_box_map.insert(comic_id=comic.id,
+                                    box_id=copy_comic.vars.selected_box)
         else:
             # Clone the comic
-            db.comics.insert(box_id=copy_comic.vars.selected_box,
-                             title=comic.title,
-                             issue_no=comic.issue_no,
-                             writers=comic.writers,
-                             artists=comic.artists,
-                             publisher=comic.publisher,
-                             description=comic.description,
-                             image=comic.image)
+            comic_id = db.comics.insert(title=comic.title,
+                                        issue_no=comic.issue_no,
+                                        writers=comic.writers,
+                                        artists=comic.artists,
+                                        publisher=comic.publisher,
+                                        description=comic.description,
+                                        image=comic.image)
+            db.comic_box_map.insert(comic_id=comic_id,
+                                    box_id=copy_comic.vars.selected_box)
         
         redirect(URL('boxes', 'box', vars=dict(id=copy_comic.vars.selected_box)))
     elif copy_comic.errors:
@@ -258,12 +260,12 @@ def move():
     box_id = request.vars['box_id'] if request.vars['box_id'] != None else 1
     comic_id = request.vars['id'] if request.vars['id'] != None else 1
     comic = db(db.comics.id == comic_id).select()[0]
-    comic_boxes = get_boxes(comic)
+    comic_boxes_ids = [box.id for box in get_boxes(comic, db.boxes.id)]
     users_boxes = db(db.boxes.user_id == auth.user.id).select()
     
     box_options = []
     for box in users_boxes:
-        if box.id not in comic_boxes:
+        if box.id not in comic_boxes_ids:
             box_options.append(OPTION(box.name, _value=box.id))
         
     move_comic = FORM(DIV(LABEL('Select a box to move the comic to:'),
@@ -273,9 +275,10 @@ def move():
                       _role='form')
     
     if move_comic.accepts(request, session):
-        comic_boxes.remove(long(box_id))
-        comic_boxes.append(move_comic.vars.selected_box)
-        comic.update_record(boxes=comic_boxes)
+        db((db.comic_box_map.box_id == box_id)
+           & (db.comic_box_map.comic_id == comic.id)).delete()
+        db.comic_box_map.insert(comic_id=comic.id,
+                                box_id=move_comic.vars.selected_box)
         
         redirect(URL('boxes', 'box', vars=dict(id=move_comic.vars.selected_box)))
     elif move_comic.errors:

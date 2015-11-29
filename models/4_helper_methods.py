@@ -96,14 +96,14 @@ def new_comic_icon(box):
                _class='comic-preview')
 
 
-def get_comics(box):
+def get_comics(box, select=db.comics.ALL):
     return db((db.comics.id == db.comic_box_map.comic_id)
-              & (db.comic_box_map.box_id == box.id)).select(db.comics.ALL)
+              & (db.comic_box_map.box_id == box.id)).select(select)
 
 
-def get_boxes(comic):
+def get_boxes(comic, select=db.boxes.ALL):
     return db((db.boxes.id == db.comic_box_map.box_id)
-              & (db.comic_box_map.comic_id == comic.id)).select(db.boxes.ALL)
+              & (db.comic_box_map.comic_id == comic.id)).select(select)
 
 
 def get_visible_boxes(public_only=False, order=None):

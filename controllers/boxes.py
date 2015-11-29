@@ -115,10 +115,11 @@ def remove():
                 comic_boxes = get_boxes(comic)
                 
                 if len(comic_boxes) == 1:
-                    comic.update_record(boxes=[unfiled_box.id])
-                else:  
-                    comic_boxes.remove(long(box.id))
-                    comic.update_record(boxes=comic_boxes)
+                    db.comic_box_map.insert(comic_id=comic.id,
+                                            box_id=unfiled_box.id)
+                
+                db((db.comic_box_map.box_id == box.id)
+                   & (db.comic_box_map.comic_id == comic.id)).delete()
             
             db(db.boxes.id == box.id).delete()
         else:
