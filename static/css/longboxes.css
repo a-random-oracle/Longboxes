@@ -43,18 +43,51 @@ div.box-preview {
 	margin-bottom: 2%;
 }
 
+div.box-image {
+	position: relative;
+}
+
 img.box-thumbnail {
-	margin: 1px 1px 1px 1px;
 	display: block;
 	max-width: 150px;
 	max-height: 200px;
-	width: auto;
 	height: 100%;
+	margin: auto;
+}
+
+img.box-indicator {
+	position: absolute;
+	display: block;
+	bottom: 0;
+	left: 50%;
+	margin-right: -50%;
+	transform: translate(-50%, 0);
 }
 
 div.user-preview {
 	margin-top: 2%;
 	margin-bottom: 2%;
+}
+
+div.user-image {
+	position: relative;
+}
+
+img.user-thumbnail {
+	display: block;
+	max-width: 150px;
+	max-height: 200px;
+	height: 100%;
+	margin: auto;
+}
+
+.user-indicator {
+	position: absolute;
+	display: block;
+	bottom: 0;
+	left: 50%;
+	margin-right: -50%;
+	transform: translate(-50%, 0);
 }
 
 div.clear-floats {

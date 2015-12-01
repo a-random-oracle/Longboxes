@@ -18,23 +18,13 @@ def sign_in_and_out():
 def construct_box_preview(box):
     owner = db(db.auth_user.id == box.user_id).select()[0]
     comics = get_comics(box)
+    box_thumbnail = get_box_thumbnail(box)
     
-    if (len(comics) == 0):
-        box_image = IMG(_src=URL('static', 'images/default_box.png'),
-                        _class='box-thumbnail')
-    else:
-        box_image = IMG(_src=URL('main', 'download', args=comics[0].image),
-                        _class='box-thumbnail')
-    
+    visibility = ''
     if auth.user and auth.user.id == owner.id:
-        if box.visible:
-            visibility = ' (Public)'
-        else:
-            visibility = ' (Private)'
-    else:
-        visibility = ''
+        visibility = ' (Public)' if box.visible else ' (Private)'
     
-    return DIV(A(box_image,
+    return DIV(A(box_thumbnail,
                  _href=URL('boxes', 'box', vars=dict(id=box.id))),
                DIV(A(box.name,
                      _href=URL('boxes', 'box', vars=dict(id=box.id))),
@@ -67,12 +57,16 @@ def construct_comic_preview(comic, current_box):
 
 
 def construct_user_preview(user):
-    box_count = db((db.boxes.user_id == user.id)
-                   & (db.boxes.visible == True)).count()
+    users_public_boxes = db((db.boxes.user_id == user.id)
+                            & (db.boxes.visible == True)).select()
+    user_thumbnail = get_user_thumbnail(user, users_public_boxes)
+    box_count = len(users_public_boxes)
     box_term = 'boxes' if box_count > 1 else 'box'
     box_text = str(box_count) + ' ' + box_term if box_count > 0 else 'No boxes'
     
-    return DIV(A(DIV(user.display_name, _class='user-display-name'),
+    return DIV(A(user_thumbnail,
+                 _href=URL('main', 'user', args=['view_boxes'], vars=dict(id=user.id))),
+               A(DIV(user.display_name, _class='user-display-name'),
                  _href=URL('main', 'user', args=['view_boxes'], vars=dict(id=user.id))),
                DIV(box_text,
                    _class='user-boxes'),
@@ -94,6 +88,52 @@ def new_comic_icon(box):
                  _href=URL('comics', 'create', vars=dict(box_id=box.id))),
                DIV(_class='clear-floats'),
                _class='comic-preview')
+
+
+def get_box_thumbnail(box):
+    comics = get_comics(box)
+    
+    # Check that the box has at least one comic
+    # If not, use the default box image
+    if (len(comics) == 0):
+        thumbnail = IMG(_src=URL('static', 'images/default_box.png'),
+                        _class='box-thumbnail')
+    else:
+        thumbnail = IMG(_src=URL('main', 'download', args=comics[0].image),
+                        _class='box-thumbnail')
+    
+    return DIV(thumbnail,
+               IMG(_src=URL('static', 'images/box_indicator.png'),
+                   _class='box-indicator'),
+               _class='box-image')
+
+
+def get_user_thumbnail(user, users_public_boxes=None):
+    if users_public_boxes == None:
+        users_public_boxes = db((db.boxes.user_id == user.id)
+                                & (db.boxes.visible == True)).select()
+    
+    # Check that the user has at least one public box
+    # If not, use the default user image
+    if (len(users_public_boxes) == 0):
+        thumbnail = IMG(_src=URL('static', 'images/default_user.png'),
+                        _class='user-thumbnail')
+    else:
+        comics = get_comics(users_public_boxes[0])
+        
+        # Check that the box has at least one comic
+        # If not, use the default box image
+        if (len(comics) == 0):
+            thumbnail = IMG(_src=URL('static', 'images/default_box.png'),
+                            _class='box-thumbnail')
+        else:
+            thumbnail = IMG(_src=URL('main', 'download', args=comics[0].image),
+                            _class='box-thumbnail')
+    
+    return DIV(thumbnail,
+               IMG(_src=URL('static', 'images/user_indicator.png'),
+                   _class='user-indicator'),
+               _class='user-image')
 
 
 def get_comics(box, select=db.comics.ALL):
