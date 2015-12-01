@@ -124,6 +124,11 @@ div.clear-floats {
 	clear: both;
 }
 
+.glyphicon-spaced {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
 #site-search, #user-filter {
 	width: 80%
 }
