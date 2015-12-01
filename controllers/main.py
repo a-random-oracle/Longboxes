@@ -144,8 +144,13 @@ def user():
                    
                 users_boxes_html.append((box, box_comics_html))
         
+        options = DIV(DIV(_class='col-sm-3 col-md-4'),
+                      DIV(new_comic_icon(), _class='col-sm-6 col-md-4'),
+                      DIV(_class='col-sm-3 col-md-4'),
+                      _class='col-md-12')
+        
         response.title = user.display_name + '\'s Comics'
-        return dict(users_boxes_html=users_boxes_html, user=user)
+        return dict(users_boxes_html=users_boxes_html, user=user, options=options)
     
     response.title = 'Sign In'
     return dict(login=auth())

@@ -77,10 +77,15 @@ def new_box_icon():
                _class='box-preview')
 
 
-def new_comic_icon(box):
+def new_comic_icon(box=None):
+    if box == None:
+        link = URL('comics', 'create')
+    else:
+        link = URL('comics', 'create', vars=dict(box_id=box.id))
+    
     return DIV(A(IMG(_src=URL('static', 'images/add_comic.png'),
                      _class='comic-thumbnail'),
-                 _href=URL('comics', 'create', vars=dict(box_id=box.id))),
+                 _href=link),
                DIV(_class='clear-floats'),
                _class='comic-preview')
 
