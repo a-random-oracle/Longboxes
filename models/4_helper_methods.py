@@ -20,15 +20,10 @@ def construct_box_preview(box):
     comics = get_comics(box)
     box_thumbnail = get_box_thumbnail(box)
     
-    visibility = ''
-    if auth.user and auth.user.id == owner.id:
-        visibility = ' (Public)' if box.visible else ' (Private)'
-    
     return DIV(A(box_thumbnail,
                  _href=URL('boxes', 'box', vars=dict(id=box.id))),
                DIV(A(box.name,
                      _href=URL('boxes', 'box', vars=dict(id=box.id))),
-                   visibility,
                    _class='box-name'),
                DIV(str(len(comics)) + ' comics',
                    _class='box-comic-count'),

@@ -74,9 +74,21 @@ img.box-indicator {
 	transform: translate(-50%, 0);
 }
 
+.box-name {
+	text-align: center;
+}
+
+.box-comic-count {
+	text-align: center;
+}
+
+.box-owner {
+	text-align: center;
+}
+
 div.user-preview {
-	margin-top: 2%;
-	margin-bottom: 2%;
+	padding-top: 2%;
+	padding-bottom: 2%;
 }
 
 div.user-image {
@@ -98,6 +110,14 @@ img.user-thumbnail {
 	left: 50%;
 	margin-right: -50%;
 	transform: translate(-50%, 0);
+}
+
+.user-display-name {
+	text-align: center;
+}
+
+.user-boxes {
+	text-align: center;
 }
 
 div.clear-floats {
