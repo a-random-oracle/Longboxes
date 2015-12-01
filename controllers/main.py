@@ -71,7 +71,7 @@ def search():
         for comic, box in public_results:
             results_html.append(construct_comic_preview(comic, box))
     
-    response.title = 'Search'
+    response.title = 'Search Comics'
     return dict(search=search, results_html=results_html, search_complete=search_complete)
 
 
@@ -104,7 +104,7 @@ def search_users():
         for user in results:
             results_html.append(construct_user_preview(user))
     
-    response.title = 'Search'
+    response.title = 'Search Users'
     return dict(filter=filter, results_html=results_html)
 
 
