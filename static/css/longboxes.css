@@ -1,3 +1,13 @@
+.navbar .navbar-nav {
+	display: inline-block;
+	float: none;
+	vertical-align: top;
+}
+
+.navbar .navbar-collapse {
+	text-align: center;
+}
+
 img.comic-cover-image {
 	float: left;
 	margin: 1px 1px 1px 1px;
