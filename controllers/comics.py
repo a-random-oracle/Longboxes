@@ -21,8 +21,21 @@ def comic():
 @auth.requires_login()
 def create():
     box_id = request.vars['box_id'] if request.vars['box_id'] != None else 1
+    default_box = db(db.boxes.id == box_id).select()[0]
+    users_boxes = db(db.boxes.user_id == auth.user.id).select()
     
-    form = FORM(DIV(INPUT(_id='first-field', _name='comic_title', _placeholder='Comic title', _class='form-control'),
+    box_options = []
+    for box in users_boxes:
+        # Use the box passed in as a parameter as the default option
+        if box.id == default_box.id:
+            box_options.append(OPTION(box.name, _value=box.id, _selected='selected'))
+        else:
+            box_options.append(OPTION(box.name, _value=box.id))
+    
+    form = FORM(DIV(LABEL('Select the box to create the comic in:'),
+                    SELECT(box_options, _id='first-field', _name='selected_box', _class='form-control'),
+                    _class='form-group'),
+                DIV(INPUT(_name='comic_title', _placeholder='Comic title', _class='form-control'),
                     _class='form-group'),
                 DIV(INPUT(_name='comic_issue_no', _placeholder='Issue no.', _class='form-control'),
                     _class='form-group'),
@@ -46,14 +59,16 @@ def create():
                 _role='form')
     
     if form.accepts(request, session):
-        comic_id = db.comics.insert(box_id=box_id,
-                                    title=form.vars.comic_title,
+        comic_id = db.comics.insert(title=form.vars.comic_title,
                                     issue_no=form.vars.comic_issue_no,
                                     writers=form.vars.comic_writers,
                                     artists=form.vars.comic_artists,
                                     publisher=form.vars.comic_publisher,
                                     description=form.vars.comic_description,
                                     image=form.vars.comic_image)
+        
+        db.comic_box_map.insert(comic_id=comic_id,
+                                box_id=form.vars.selected_box)
         
         redirect(URL('comics', 'comic', vars=dict(id=comic_id, box_id=box_id)))
     elif form.errors:
