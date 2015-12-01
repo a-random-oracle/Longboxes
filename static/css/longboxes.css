@@ -10,7 +10,7 @@
 
 img.comic-cover-image {
 	float: left;
-	margin: 1px 1px 1px 1px;
+	margin: 0 15px 0 0;
 	display: block;
 	max-width: 300px;
 	max-height: 400px;
@@ -46,6 +46,26 @@ div.comic-issue-no {
 div.comic-owner {
 	font-size: medium;
 	margin-left: 5px;
+}
+
+div.comic-full-writers {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+div.comic-full-artists {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+div.comic-full-publisher {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+div.comic-full-description {
+	margin-top: 10px;
+	margin-bottom: 10px;
 }
 
 div.box-preview {
@@ -125,8 +145,8 @@ div.clear-floats {
 }
 
 .glyphicon-spaced {
-  margin-left: 5px;
-  margin-right: 5px;
+  margin-left: 8px;
+  margin-right: 8px;
 }
 
 #site-search, #user-filter {

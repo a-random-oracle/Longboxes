@@ -1,27 +1,39 @@
 {{extend 'longboxes.html'}}
 
 	<div class="container-fluid">
-		<h2 class="text-center">
-			<strong>{{=comic.title}}</strong>
+		<h2 class="text-center"><strong>{{=comic.title}}</strong></h2>
+		<h4 class="text-center">Issue No. {{=comic.issue_no}}</h4>
+		<h3 class="text-center">
 			{{
 			if auth.user and auth.user.id == owner.id:
-				=A(SPAN(_class='glyphicon glyphicon-pencil'), _href=URL('comics', 'edit', vars=dict(id=comic.id, box_id=box_id)))
-				=A(SPAN(_class='glyphicon glyphicon-trash'), _href=URL('comics', 'remove', vars=dict(id=comic.id, box_id=box_id)))
-				=A(SPAN(_class='glyphicon glyphicon-arrow-right'), _href=URL('comics', 'move', vars=dict(id=comic.id, box_id=box_id)))
+				=A(SPAN(_class='glyphicon glyphicon-pencil glyphicon-spaced'), _title='Edit', _href=URL('comics', 'edit', vars=dict(id=comic.id, box_id=box_id)))
+				=A(SPAN(_class='glyphicon glyphicon-arrow-right glyphicon-spaced'), _title='Move', _href=URL('comics', 'move', vars=dict(id=comic.id, box_id=box_id)))
 				pass
 			
-			=A(SPAN(_class='glyphicon glyphicon-duplicate'), _href=URL('comics', 'copy', vars=dict(id=comic.id, box_id=box_id)))
+			=A(SPAN(_class='glyphicon glyphicon-duplicate glyphicon-spaced'), _title='Copy', _href=URL('comics', 'copy', vars=dict(id=comic.id, box_id=box_id)))
+			
+			if auth.user and auth.user.id == owner.id:
+				=A(SPAN(_class='glyphicon glyphicon-trash glyphicon-spaced'), _title='Delete', _href=URL('comics', 'remove', vars=dict(id=comic.id, box_id=box_id)))
+				pass
 			}}
 		</h2>
-		<p class="text-center">Issue No. {{=comic.issue_no}}</p>
-		<img class="comic-cover-image" src="{{=URL('main', 'download', args=comic.image)}}" />
-		{{if len(comic.writers) > 0:}}
-		<p>Writers: {{=', '.join(comic.writers)}}</p>
-		{{pass}}
-		{{if len(comic.artists) > 0:}}
-		<p>Artists: {{=', '.join(comic.artists)}}</p>
-		{{pass}}
-		<p>Publisher: {{=comic.publisher}}</p>
-		<p>{{=comic.description}}</p>
-		<div style="clear: both"></div>
+		
+		<div class="col-md-12">
+			<div class="col-md-1"></div>
+			
+			<div class="col-md-10">
+				<img class="comic-cover-image" src="{{=URL('main', 'download', args=comic.image)}}" />
+				{{if len(comic.writers) > 0:}}
+				<div class="comic-full-writers">Writers: {{=', '.join(comic.writers)}}</div>
+				{{pass}}
+				{{if len(comic.artists) > 0:}}
+				<div class="comic-full-artists">Artists: {{=', '.join(comic.artists)}}</div>
+				{{pass}}
+				<div class="comic-full-publisher">Publisher: {{=comic.publisher}}</div>
+				<div class="comic-full-description">{{=comic.description}}</div>
+				<div style="clear: both"></div>
+			</div>
+			
+			<div class="col-md-1"></div>
+		</div>
 	</div>
