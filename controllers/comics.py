@@ -212,7 +212,7 @@ def remove_entirely():
         pass
     
     if cancel.process(formname='cancel').accepted:
-        redirect(URL('boxes', 'box', vars=dict(id=box_id)))
+        redirect(URL('comics', 'comic', vars=dict(id=comic_id, box_id=box_id)))
     elif cancel.errors:
         pass
     else:
