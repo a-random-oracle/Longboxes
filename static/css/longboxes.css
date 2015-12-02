@@ -1,3 +1,7 @@
+body {
+	margin-bottom: 0;
+}
+
 .navbar .navbar-nav {
 	display: inline-block;
 	float: none;
@@ -6,6 +10,11 @@
 
 .navbar .navbar-collapse {
 	text-align: center;
+}
+
+div.box-collection {
+	margin-top: 20px;
+	margin-bottom: 30px;
 }
 
 img.comic-cover-image {
@@ -64,7 +73,7 @@ div.comic-full-publisher {
 }
 
 div.comic-full-description {
-	margin-top: 10px;
+	margin-top: 20px;
 	margin-bottom: 10px;
 }
 
@@ -88,7 +97,7 @@ img.box-thumbnail {
 img.box-indicator {
 	position: absolute;
 	display: block;
-	bottom: 0;
+	bottom: 1px;
 	left: 50%;
 	margin-right: -50%;
 	transform: translate(-50%, 0);
@@ -126,7 +135,7 @@ img.user-thumbnail {
 .user-indicator {
 	position: absolute;
 	display: block;
-	bottom: 0;
+	bottom: 1px;
 	left: 50%;
 	margin-right: -50%;
 	transform: translate(-50%, 0);
