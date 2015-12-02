@@ -85,7 +85,7 @@ def create():
         
         redirect(URL('comics', 'comic', vars=dict(id=comic_id, box_id=box_id)))
     elif form.errors:
-        pass
+        response.flash = 'Please ensure that the form is filled out correctly.'
     else:
         pass
     
@@ -166,9 +166,10 @@ def edit():
                             description=edit_comic.vars.comic_description,
                             image=new_image)
         
+        
         redirect(URL('comics', 'comic', vars=dict(id=comic.id, box_id=box_id)))
     elif edit_comic.errors:
-        pass
+        response.flash = 'Please ensure that the form is filled out correctly.'
     else:
         pass
     

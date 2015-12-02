@@ -1,6 +1,7 @@
 {{# Y0072003}}
 {{extend 'longboxes.html'}}
-
+	{{block flash}}{{=DIV(response.flash, _class='alert alert-danger') if response.flash else ''}}{{end flash}}
+	
 	<div class="container-fluid">
 		<h2>Add a comic</h2>
 		<div class="col-xs-12 col-sm-8 col-md-4">
