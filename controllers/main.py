@@ -40,12 +40,16 @@ def index():
 
 
 def search():
-    search = FORM(INPUT(_id='site-search', _name='search_term', _placeholder='Search by Name, Artist, Writer or Publisher', _class='form-control'),
+    search = FORM(INPUT(_id='site-search', _name='search_term',
+                        _placeholder='Search by Name, Artist, Writer or Publisher',
+                        _class='form-control', requires=IS_NOT_EMPTY(error_message='Please enter a search term')),
                   INPUT(_name='search', _type='submit', _value='Search', _class='btn btn-default'),
                   _class='form-inline')
     
     results = []
     
+    search_complete = False
+    search_term_error = None
     if search.accepts(request, session):
         if search.vars.search_term != None:
             query_term = '%' + search.vars.search_term + '%'
@@ -63,9 +67,11 @@ def search():
         
         search_complete = True
     elif search.errors:
-        search_complete = False
+        if search.errors.search_term:
+            search_term_error = search.errors.search_term
+            search.errors.clear()
     else:
-        search_complete = False
+        pass
     
     results_html = []
     if len(results) > 0:
@@ -73,18 +79,22 @@ def search():
             results_html.append(construct_comic_preview(comic, box))
     
     response.title = 'Search Comics'
-    return dict(search=search, results_html=results_html, search_complete=search_complete)
+    return dict(search=search, results_html=results_html, search_complete=search_complete, search_term_error=search_term_error)
 
 
 def search_users():
-    filter = FORM(INPUT(_id='user-filter', _name='filter_term', _placeholder='Filter users by name', _class='form-control'),
+    filter = FORM(INPUT(_id='user-filter', _name='filter_term', _placeholder='Filter users by name',
+                        _class='form-control'),
                   INPUT(_name='apply_filter', _type='submit', _value='Apply Filter', _class='btn btn-default'),
                   _class='form-inline')
     
     results = db().select(db.auth_user.ALL)
     
+    filter_complete = False
     if filter.accepts(request, session):
         if filter.vars.filter_term != None:
+            filter_complete = True
+            
             # As virtual fields (i.e. auth_user.display_name) run at the application level
             # rather than the database level, they cannot be used in database queries
             # Consequently this search must be done manually
@@ -106,7 +116,7 @@ def search_users():
             results_html.append(construct_user_preview(user))
     
     response.title = 'Search Users'
-    return dict(filter=filter, results_html=results_html)
+    return dict(filter=filter, results_html=results_html, filter_complete=filter_complete)
 
 
 def user():

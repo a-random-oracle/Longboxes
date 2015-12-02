@@ -36,25 +36,37 @@ def create():
     form = FORM(DIV(LABEL('Select the box to create the comic in:'),
                     SELECT(box_options, _id='first-field', _name='selected_box', _class='form-control'),
                     _class='form-group'),
-                DIV(INPUT(_name='comic_title', _placeholder='Comic title', _class='form-control'),
+                DIV(INPUT(_name='comic_title', _placeholder='Comic title', _class='form-control',
+                          requires=IS_NOT_EMPTY(error_message='Please give the comic a title')),
                     _class='form-group'),
-                DIV(INPUT(_name='comic_issue_no', _placeholder='Issue no.', _class='form-control'),
+                DIV(INPUT(_name='comic_issue_no', _placeholder='Issue no.', _class='form-control',
+                          requires=[IS_NOT_EMPTY(error_message='Please enter an issue number'),
+                                    IS_INT_IN_RANGE(0, None, error_message='This needs to be a number greater than 0')]),
                     _class='form-group'),
-                DIV(UL(LI(INPUT(_name='comic_writers', _placeholder='Writers', _class='form-control')),
+                DIV(UL(LI(INPUT(_name='comic_writers', _placeholder='Writers', _class='form-control',
+                                requires=[IS_NOT_EMPTY(error_message='Please enter at least one writer'),
+                                          IS_MATCH('[\D]+', error_message='Names should not contain numbers')])),
                        _class='w2p_list',
                        _style='list-style: none'),
                     _class='w2p_fw'),
-                DIV(UL(LI(INPUT(_name='comic_artists', _placeholder='Artists', _class='form-control')),
+                DIV(UL(LI(INPUT(_name='comic_artists', _placeholder='Artists', _class='form-control',
+                                requires=[IS_NOT_EMPTY(error_message='Please enter at least one artist'),
+                                          IS_MATCH('[\D]+', error_message='Names should not contain numbers')])),
                        _class='w2p_list',
                        _style='list-style: none'),
                     _class='w2p_fw'),
-                DIV(INPUT(_name='comic_publisher', _placeholder='Publisher', _class='form-control'),
+                DIV(INPUT(_name='comic_publisher', _placeholder='Publisher', _class='form-control',
+                          requires=IS_NOT_EMPTY(error_message='Please enter the name of the comic\'s publisher')),
                     _class='form-group'),
-                DIV(TEXTAREA(_name='comic_description', _placeholder='Description', _class='form-control'),
+                DIV(TEXTAREA(_name='comic_description', _placeholder='Description', _class='form-control',
+                             requires=[IS_NOT_EMPTY(error_message='Please enter at least one artist'),
+                                       IS_WORD_LENGTH(None, 300, error_message='Comic descriptions are limited to 300 words')]),
                     _class='form-group'),
                 DIV(IMG(_id='comic-image-preview', _src='', _hidden=True),
                     INPUT(_id='comic-image-selector', _name='comic_image', _type='file', _class='upload',
-                          requires=IS_IMAGE(extensions=('png', 'jpg'), maxsize=(300, 400))),
+                          requires=[IS_NOT_EMPTY(error_message='Please select an image for this comic'),
+                                    IS_IMAGE(extensions=('png', 'jpeg'), maxsize=(300, 400),
+                                             error_message='Image must be either a png or jpg, and must be no larger than 300x400 in size')]),
                     _class='form-group'),
                 INPUT(_name='Add Comic', _type='submit', _value='Add Comic', _class='btn btn-default'),
                 _role='form')
@@ -89,21 +101,32 @@ def edit():
     
     writers = []
     if len(comic.writers) == 0:
-        writers += LI(INPUT(_name='comic_artists', _placeholder='Writers', _class='form-control'))
+        writers += LI(INPUT(_name='comic_artists', _placeholder='Writers', _class='form-control',
+                            requires=[IS_NOT_EMPTY(error_message='Please enter at least one writer'),
+                                      IS_MATCH('[\D]+', error_message='Names should not contain numbers')]))
     else:
         for writer in comic.writers:
-            writers += LI(INPUT(_name='comic_writers', _value=writer, _class='form-control'))
+            writers += LI(INPUT(_name='comic_writers', _value=writer, _class='form-control',
+                                requires=[IS_NOT_EMPTY(error_message='Please enter at least one writer'),
+                                          IS_MATCH('[\D]+', error_message='Names should not contain numbers')]))
     
     artists = []
     if len(comic.artists) == 0:
-        artists += LI(INPUT(_name='comic_artists', _placeholder='Artists', _class='form-control'))
+        artists += LI(INPUT(_name='comic_artists', _placeholder='Artists', _class='form-control',
+                            requires=[IS_NOT_EMPTY(error_message='Please enter at least one artist'),
+                                      IS_MATCH('[\D]+', error_message='Names should not contain numbers')]))
     else:
         for artist in comic.artists:
-            artists += LI(INPUT(_name='comic_artists', _value=artist, _class='form-control'))
+            artists += LI(INPUT(_name='comic_artists', _value=artist, _class='form-control',
+                                requires=[IS_NOT_EMPTY(error_message='Please enter at least one artist'),
+                                          IS_MATCH('[\D]+', error_message='Names should not contain numbers')]))
     
-    edit_comic = FORM(DIV(INPUT(_id='first-field', _name='comic_title', _value=comic.title, _class='form-control'),
+    edit_comic = FORM(DIV(INPUT(_id='first-field', _name='comic_title', _value=comic.title, _class='form-control',
+                          requires=IS_NOT_EMPTY(error_message='Please enter a title for the comic')),
                           _class='form-group'),
-                      DIV(INPUT(_name='comic_issue_no', _value=comic.issue_no, _class='form-control'),
+                      DIV(INPUT(_name='comic_issue_no', _value=comic.issue_no, _class='form-control',
+                          requires=[IS_NOT_EMPTY(error_message='Please enter an issue number'),
+                                    IS_INT_IN_RANGE(0, None, error_message='This needs to be a number greater than 0')]),
                           _class='form-group'),
                       DIV(UL(writers,
                              _class='w2p_list',
@@ -113,13 +136,18 @@ def edit():
                              _class='w2p_list',
                              _style='list-style: none'),
                           _class='w2p_fw'),
-                      DIV(INPUT(_name='comic_publisher', _value=comic.publisher, _class='form-control'),
+                      DIV(INPUT(_name='comic_publisher', _value=comic.publisher, _class='form-control',
+                                requires=IS_NOT_EMPTY(error_message='Please enter the name of the comic\'s publisher')),
                           _class='form-group'),
-                      DIV(TEXTAREA(_name='comic_description', value=comic.description, _class='form-control'),
+                      DIV(TEXTAREA(_name='comic_description', value=comic.description, _class='form-control',
+                                   requires=[IS_NOT_EMPTY(error_message='Please enter at least one artist'),
+                                             IS_WORD_LENGTH(None, 300, error_message='Comic descriptions are limited to 300 words')]),
                           _class='form-group'),
                       DIV(IMG(_id='comic-image-preview', _src='', _hidden=True),
                           INPUT(_id='comic-image-selector', _name='comic_image', _type='file', _class='upload',
-                                requires=IS_EMPTY_OR(IS_IMAGE(extensions=('png', 'jpeg'), maxsize=(300, 400)))),
+                                requires=IS_EMPTY_OR(IS_IMAGE(extensions=('png', 'jpeg'), maxsize=(300, 400),
+                                                              error_message='Image must be either a png or jpg,'
+                                                                            + 'and must be no larger than 300x400 in size'))),
                           _class='form-group'),
                       INPUT(_name='Confirm', _type='submit', _value='Confirm', _class='btn btn-default'),
                       _role='form')

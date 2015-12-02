@@ -185,3 +185,37 @@ def is_comic_visible(comic):
             return (True, box)
     
     return (False, None)
+
+
+# Custom validators
+class IS_WORD_LENGTH(object):
+    
+    def __init__(self, minimum=None, maximum=None, error_message='Must be between the lengths specified'):
+        if minimum < 0:
+            self.minimum = minimum
+        else:
+            self.minimum = None
+            
+        if maximum < 0:
+            self.maximum = maximum
+        else:
+            self.maximum = None
+        
+        self.error_message = error_message
+    
+    def __call__(self, value):
+        try:
+            words = value.split(' ')
+            
+            if self.minimum == None and self.maximum == None:
+                return (value, None)
+            elif self.minimum == None and len(words) <= self.maximum:
+                return (value, None)
+            elif self.maximum == None and len(words) >= self.minimum:
+                return (value, None)
+            elif len(words) >= self.minimum and len(words) <= self.maximum:
+                return (value, None)
+            
+            return (value, self.error_message)
+        except:
+            return (value, self.error_message)

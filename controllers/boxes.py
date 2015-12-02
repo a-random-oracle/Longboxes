@@ -14,7 +14,7 @@ def box():
     comics = get_comics(box)
     owner = db(db.auth_user.id == box.user_id).select()[0]
     
-    # Check that the box is visible
+    # Check that the box is visible to the user
     if not is_box_visible(box):
         raise HTTP(404)
     
@@ -28,7 +28,8 @@ def box():
 
 @auth.requires_login()
 def create():
-    new_box = FORM(DIV(INPUT(_id='first-field', _name='box_name', _placeholder='Box name', _class='form-control'),
+    new_box = FORM(DIV(INPUT(_id='first-field', _name='box_name', _placeholder='Box name', _class='form-control',
+                             requires=IS_NOT_EMPTY(error_message='Please enter a name for the box')),
                        _class='form-group'),
                    DIV(LABEL(INPUT(_name='visibility', _type='checkbox'),
                              'Allow others to view this box'),
@@ -57,11 +58,12 @@ def edit():
     box_id = request.vars['id'] if request.vars['id'] != None else 1
     box = db(db.boxes.id == box_id).select()[0]
     
-    # Check that the box is visible
+    # Check that the box is visible to the user
     if not is_box_visible(box):
         raise HTTP(404)
     
-    edit_box = FORM(DIV(INPUT(_id='first-field', _name='box_name', value=box.name, _class='form-control'),
+    edit_box = FORM(DIV(INPUT(_id='first-field', _name='box_name', value=box.name, _class='form-control',
+                              requires=IS_NOT_EMPTY(error_message='Please enter a name for the box')),
                         _class='form-group'),
                     DIV(LABEL(INPUT(_name='visibility', _type='checkbox', value=box.visible),
                               'Allow others to view this box'),
