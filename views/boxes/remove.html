@@ -2,14 +2,22 @@
 {{extend 'longboxes.html'}}
 
 	<div class="container-fluid">
-		<h2>Deleting box '{{=box_name}}'</h2>
-		<p>{{=STRONG('Once a box has been deleted it cannot be recovered.')}}</p>
-		<p>All items in this box will be moved to your {{=A('Unfiled box', _href=unfiled_box_link)}}</p>
-		<p>Are you sure you wish to delete this box?</p>
+		<h2 class="text-center">Deleting box '{{=box_name}}'</h2>
+		<p class="text-center">{{=STRONG('Once a box has been deleted it cannot be recovered.')}}</p>
+		<p class="text-center">All items in this box will be moved to your {{=A('Unfiled box', _href=unfiled_box_link)}}</p>
+		<p class="text-center">Are you sure you wish to delete this box?</p>
+		
+		<div class="col-md-12"></div>
+		
+		<div class="col-md-4"></div>
+		
 		<div class="col-md-2">
 			{{=delete_box}}
 		</div>
+		
 		<div class="col-md-2">
 			{{=cancel}}
 		</div>
+		
+		<div class="col-md-4"></div>
 	</div>

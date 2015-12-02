@@ -2,13 +2,21 @@
 {{extend 'longboxes.html'}}
 
 	<div class="container-fluid">
-		<h2>Deleting comic '{{=comic_title}}'</h2>
-		<p>{{=STRONG('Once a comic has been deleted it cannot be recovered.')}}</p>
-		<p>Are you sure you wish to delete this comic?</p>
+		<h2 class="text-center">Deleting comic '{{=comic_title}}'</h2>
+		<p class="text-center">{{=STRONG('Once a comic has been deleted it cannot be recovered.')}}</p>
+		<p class="text-center">Are you sure you wish to delete this comic?</p>
+		
+		<div class="col-md-12"></div>
+		
+		<div class="col-md-4"></div>
+		
 		<div class="col-md-2">
 			{{=delete_comic}}
 		</div>
+		
 		<div class="col-md-2">
 			{{=cancel}}
 		</div>
+		
+		<div class="col-md-4"></div>
 	</div>

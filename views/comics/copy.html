@@ -2,10 +2,15 @@
 {{extend 'longboxes.html'}}
 
 	<div class="container-fluid">
-		<h2>Copy comic '{{=comic_title}}'</h2>
+		<h2 class="text-center">Copy comic '{{=comic_title}}'</h2>
+		
+		<div class="col-sm-2 col-md-4"></div>
+		
 		<div class="col-xs-12 col-sm-8 col-md-4">
 			{{=copy_comic}}
 		</div>
+		
+		<div class="col-sm-2 col-md-4"></div>
 	</div>
 	
 	{{block page_js}}
